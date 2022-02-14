@@ -1,29 +1,49 @@
-import {wait} from '../src/wait'
-import * as process from 'process'
-import * as cp from 'child_process'
-import * as path from 'path'
-import {expect, test} from '@jest/globals'
+import path from 'path'
 
-test('throws invalid number', async () => {
-  const input = parseInt('foo', 10)
-  await expect(wait(input)).rejects.toThrow('milliseconds not a number')
-})
+import {expect} from '@jest/globals'
+import {getOldlogs, mountLog} from '../src/changelog'
 
-test('wait 500 ms', async () => {
-  const start = new Date()
-  await wait(500)
-  const end = new Date()
-  var delta = Math.abs(end.getTime() - start.getTime())
-  expect(delta).toBeGreaterThan(450)
-})
+const getOldLogs = async (filePath: string) => {
+  const changelogFileName = path.resolve(filePath)
+  const encoding = 'utf-8'
+  const oldLogs = await getOldlogs({changelogFileName, encoding})
+  return oldLogs
+}
 
-// shows how the runner will run a javascript action with env / stdout protocol
-test('test runs', () => {
-  process.env['INPUT_MILLISECONDS'] = '500'
-  const np = process.execPath
-  const ip = path.join(__dirname, '..', 'lib', 'main.js')
-  const options: cp.ExecFileSyncOptions = {
-    env: process.env
-  }
-  console.log(cp.execFileSync(np, [ip], options).toString())
+describe('Cangelog Action', () => {
+  it('should read file not found', async () => {
+    await expect(getOldLogs('__tests__/test666.md')).rejects.toThrow('Changelog not found')
+  })
+
+  it('should read file', async () => {
+    const oldLogs = await getOldLogs('__tests__/test.md')
+
+    expect('file read test').toBe(oldLogs)
+  })
+
+  it('should mount final log with one line', async () => {
+    const newLog = 'add log'
+    const oldLogs = await getOldLogs('__tests__/test.md')
+    const wordFind = 'file read test'
+
+    const finalLog = mountLog({newLog, oldLogs, wordFind})
+    expect(`${oldLogs}\n\n- ${newLog}`).toBe(finalLog)
+  })
+
+  it('should mount final log with multi line', async () => {
+    const newLog = 'add log'
+    const oldLogs = await getOldLogs('__tests__/test2.md')
+    const wordFind = '## Alterações'
+
+    const log = `# v1.0.0
+
+## Alterações
+
+- ${newLog}
+---
+`
+
+    const finalLog = mountLog({newLog, oldLogs, wordFind})
+    expect(log).toBe(finalLog)
+  })
 })
