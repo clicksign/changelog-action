@@ -1,11 +1,27 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Automation Changelog'
+description: 'Update the changelog every time a PR is merged'
+author: 'Team Devops'
 inputs:
-  milliseconds: # change this
+  changelog_file_name:
+    required: false
+    description: 'add changelog file name'
+    default: 'CHANGELOG.md'
+  changelog_new_log:
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+    description: 'add new log'
+  changelog_new_comments:
+    required: false
+    description: 'add new comments'
+  log_find:
+    required: true
+    description: 'add the key where the log below will be added'
+  comment_find:
+    required: false
+    description: 'add the key where the log below will be added'
+  encoding:
+    required: false
+    description: 'add encoded read file'
+    default: 'utf-8'
 runs:
   using: 'node12'
   main: 'dist/index.js'

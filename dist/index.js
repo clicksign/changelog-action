@@ -1,6 +1,104 @@
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ 82:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.mountLog = exports.getOldlogs = void 0;
+const fs_1 = __importDefault(__nccwpck_require__(747));
+const path_1 = __importDefault(__nccwpck_require__(622));
+const core = __importStar(__nccwpck_require__(186));
+const fsPromises = fs_1.default.promises;
+const getOldlogs = ({ changelogFileName, encoding }) => __awaiter(void 0, void 0, void 0, function* () {
+    const buf = yield fsPromises.readFile(changelogFileName, encoding);
+    const oldLogs = buf.toString(encoding);
+    return oldLogs;
+});
+exports.getOldlogs = getOldlogs;
+const mountLog = ({ newLog, oldLogs, wordFind }) => {
+    const logsSplit = oldLogs.split('\n');
+    if (logsSplit.length === 1) {
+        logsSplit[1] = `\n- ${newLog}`;
+        const fullLogs = logsSplit.join('\n');
+        return fullLogs;
+    }
+    const firstIndexWord = logsSplit.findIndex((word, index) => {
+        if (word === wordFind) {
+            return index;
+        }
+    });
+    console.log(firstIndexWord);
+    logsSplit[firstIndexWord + 1] = `\n- ${newLog}`;
+    const fullLogs = logsSplit.join('\n');
+    return fullLogs;
+};
+exports.mountLog = mountLog;
+function changelog({ changelogFileName, newLog, newComments, logFind, commentFind, encoding }) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            core.debug(`File add log ${changelogFileName}`);
+            const oldLogs = yield (0, exports.getOldlogs)({ changelogFileName, encoding });
+            if (newComments === null || newComments === void 0 ? void 0 : newComments.length) {
+                const fullLogsWithComment = (0, exports.mountLog)({
+                    newLog: newComments,
+                    oldLogs,
+                    wordFind: commentFind
+                });
+                core.debug(`New comments add ${newComments}`);
+                yield fsPromises.writeFile(path_1.default.resolve(changelogFileName), fullLogsWithComment, encoding);
+            }
+            const fullLogsWithLog = (0, exports.mountLog)({
+                newLog,
+                oldLogs,
+                wordFind: logFind
+            });
+            core.debug(`New log add ${newLog}`);
+            yield fsPromises.writeFile(path_1.default.resolve(changelogFileName), fullLogsWithLog, encoding);
+        }
+        catch (e) {
+            throw new Error(e.message);
+        }
+    });
+}
+exports.default = changelog;
+
+
+/***/ }),
+
 /***/ 109:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -34,17 +132,31 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(186));
-const wait_1 = __nccwpck_require__(817);
+const changelog_1 = __importDefault(__nccwpck_require__(82));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const ms = core.getInput('milliseconds');
-            core.debug(`Waiting ${ms} milliseconds ...`); // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
-            core.debug(new Date().toTimeString());
-            yield (0, wait_1.wait)(parseInt(ms, 10));
-            core.debug(new Date().toTimeString());
+            const changelogFileName = core.getInput('changelog_file_name');
+            const newLog = core.getInput('changelog_new_log');
+            const newComments = core.getInput('changelog_new_comments');
+            const logFind = core.getInput('log_find');
+            const commentFind = core.getInput('comment_find');
+            const encoding = core.getInput('encoding');
+            core.debug(`Start update changelog ${new Date().toTimeString()}`);
+            yield (0, changelog_1.default)({
+                changelogFileName,
+                newLog,
+                newComments,
+                logFind,
+                commentFind,
+                encoding
+            });
+            core.debug(`Finished update changelog${new Date().toTimeString()}`);
             core.setOutput('time', new Date().toTimeString());
         }
         catch (error) {
@@ -54,37 +166,6 @@ function run() {
     });
 }
 run();
-
-
-/***/ }),
-
-/***/ 817:
-/***/ (function(__unused_webpack_module, exports) {
-
-"use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.wait = void 0;
-function wait(milliseconds) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return new Promise(resolve => {
-            if (isNaN(milliseconds)) {
-                throw new Error('milliseconds not a number');
-            }
-            setTimeout(() => resolve('done!'), milliseconds);
-        });
-    });
-}
-exports.wait = wait;
 
 
 /***/ }),
