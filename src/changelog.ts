@@ -33,7 +33,6 @@ export const mountLog = ({newLog, oldLogs, wordFind}: IMountLog): string => {
       return index
     }
   })
-  console.log(firstIndexWord)
 
   logsSplit[firstIndexWord + 1] = `\n- ${newLog}`
   const fullLogs = logsSplit.join('\n')

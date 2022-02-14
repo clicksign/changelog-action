@@ -12,7 +12,9 @@ const getOldLogs = async (filePath: string) => {
 
 describe('Cangelog Action', () => {
   it('should read file not found', async () => {
-    await expect(getOldLogs('__tests__/test666.md')).rejects.toThrow('Changelog not found')
+    await expect(getOldLogs('__tests__/test666.md')).rejects.toThrow(
+      'Changelog not found'
+    )
   })
 
   it('should read file', async () => {
