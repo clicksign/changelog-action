@@ -1,4 +1,4 @@
-name: Check dist/
+name: Changelog Automation
 
 on:
   push:
