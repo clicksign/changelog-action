@@ -45,3 +45,49 @@ $ yarn test
 ## Change action.yml
 
 The action.yml defines news inputs and output for action.
+
+| Inputs                       |    required   |    default   |                  description                  |
+|------------------------------|:-------------:|-------------:|:---------------------------------------------:|
+| changelog_file_name          | falase        | CHANGELOG.md | add changelog file name                       |
+| changelog_new_log            | true          | null         | add new log                                   |
+| changelog_new_comments       | false         | null         | add new comments                              |
+| log_find                     | true          | null         | add the key where the log below will be added |
+| comment_find                 | false         | null         | add the key where the log below will be added |
+| encoding                     | false         | utf-8        | add encoded read file                         |
+
+
+## Example
+
+```javascript
+jobs:
+  check-dist:
+    runs-on: ubuntu-latest
+    if: "startsWith(github.event.head_commit.message, 'Merge')"
+    steps:
+      - name: Checkout Github
+        uses: actions/checkout@v2
+
+      - name: Get Title PR
+        id: get_message
+        run: echo "::set-output name=MESSAGE::$(echo '${{github.event.head_commit.message}}' | tail -n 1)"
+
+      - name: Update Changelog
+        uses: clicksign/changelog-action
+        with:
+          changelog_new_log: ${{ steps.get_message.outputs.MESSAGE }}
+          log_find: '## Alterações'
+
+      - name: Commit New Changelog
+        run: |
+          git config user.name "$(git log -n 1 --pretty=format:%an)"
+          git config user.email "$(git log -n 1 --pretty=format:%ae)"
+          git add CHANGELOG.md
+          git commit -m 'action: update changelog'
+          echo "${GITHUB_REF#refs/heads/}"
+
+      - name: Push New Changelog
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+```
