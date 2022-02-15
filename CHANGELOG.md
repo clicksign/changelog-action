@@ -2,4 +2,5 @@
 
 ## Alterações
 
+- [KZ12587] Criando action para automatizar o Changelog
 ---
