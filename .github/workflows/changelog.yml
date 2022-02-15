@@ -7,7 +7,7 @@ on:
       - release/**
 
 jobs:
-  check-dist:
+  update-changelog:
     runs-on: ubuntu-latest
     if: "startsWith(github.event.head_commit.message, 'Merge')"
     steps:
