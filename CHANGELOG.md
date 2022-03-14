@@ -2,6 +2,7 @@
 
 ## Alterações
 
+- build(deps-dev): bump typescript from 4.4.4 to 4.6.2
 - [KZ12584] Atualizar o readme com informações do with da action
 - [KZ12587] Criando action para automatizar o Changelog
 ---
