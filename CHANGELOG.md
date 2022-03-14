@@ -2,6 +2,7 @@
 
 ## Alterações
 
+- build(deps-dev): bump @typescript-eslint/parser from 5.8.1 to 5.14.0
 - build(deps-dev): bump eslint from 7.32.0 to 8.11.0
 - build(deps): bump actions/checkout from 2 to 3
 - build(deps-dev): bump typescript from 4.4.4 to 4.6.2
