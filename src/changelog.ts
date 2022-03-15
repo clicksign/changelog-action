@@ -23,7 +23,6 @@ export const mountLog = ({newLog, oldLogs, wordFind}: IMountLog): string => {
   const logsSplit = oldLogs.split('\n')
 
   if (logsSplit.length === 1) {
-    logsSplit[1] = `\n- ${newLog}`
     const fullLogs = logsSplit.join('\n')
     return fullLogs
   }
@@ -34,7 +33,7 @@ export const mountLog = ({newLog, oldLogs, wordFind}: IMountLog): string => {
     }
   })
 
-  logsSplit[firstIndexWord + 1] = `\n- ${newLog}`
+  logsSplit[firstIndexWord] = `${wordFind}\n- ${newLog}`
   const fullLogs = logsSplit.join('\n')
   return fullLogs
 }

@@ -39,9 +39,7 @@ describe('Cangelog Action', () => {
 
     const log = `# v1.0.0
 
-## Alterações
-
-- ${newLog}
+## Alterações\n- ${newLog}
 ---
 `
 

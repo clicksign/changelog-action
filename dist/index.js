@@ -57,7 +57,6 @@ exports.getOldlogs = getOldlogs;
 const mountLog = ({ newLog, oldLogs, wordFind }) => {
     const logsSplit = oldLogs.split('\n');
     if (logsSplit.length === 1) {
-        logsSplit[1] = `\n- ${newLog}`;
         const fullLogs = logsSplit.join('\n');
         return fullLogs;
     }
@@ -66,7 +65,7 @@ const mountLog = ({ newLog, oldLogs, wordFind }) => {
             return index;
         }
     });
-    logsSplit[firstIndexWord + 1] = `\n- ${newLog}`;
+    logsSplit[firstIndexWord] = `${wordFind}\n- ${newLog}`;
     const fullLogs = logsSplit.join('\n');
     return fullLogs;
 };
