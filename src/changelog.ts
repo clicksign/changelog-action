@@ -1,5 +1,9 @@
-import { IChangeLog } from './interfaces'
-import addNewLog from "./useCases/addNewLog"
+import {getOctokit, context} from '@actions/github'
+import * as core from '@actions/core'
+
+import {IChangeLog} from './interfaces'
+import updateChangelog from './useCases/update-changelog'
+import createNewRelease from './useCases/create-new-release'
 
 export default async function changelog({
   changelogFileName,
@@ -10,12 +14,22 @@ export default async function changelog({
   encoding
 }: IChangeLog): Promise<void> {
   try {
-    addNewLog({
+    updateChangelog({
       changelogFileName,
       newLog,
       newComments,
       logFind,
       commentFind,
+      encoding
+    })
+
+    const sha = core.getInput('sha')
+
+    await createNewRelease({
+      getOctokit,
+      context,
+      sha,
+      changelogFileName,
       encoding
     })
   } catch (e: any) {

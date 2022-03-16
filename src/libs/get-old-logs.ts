@@ -1,10 +1,10 @@
+import {IGetOldLogs} from '../interfaces'
+
 import fs from 'fs'
 
 const fsPromises = fs.promises
 
-import { IGetOldLogs } from '../interfaces'
-
-export default async function getOldlogs({
+export default async function getOldLogs({
   changelogFileName,
   encoding
 }: IGetOldLogs): Promise<string> {
