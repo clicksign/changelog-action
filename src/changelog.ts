@@ -1,5 +1,5 @@
 import { IChangeLog } from './interfaces'
-import addNewLog from "./useCases/addNewLog"
+import updateChangelog from "./useCases/updateChangelog"
 
 export default async function changelog({
   changelogFileName,
@@ -10,7 +10,7 @@ export default async function changelog({
   encoding
 }: IChangeLog): Promise<void> {
   try {
-    addNewLog({
+    updateChangelog({
       changelogFileName,
       newLog,
       newComments,

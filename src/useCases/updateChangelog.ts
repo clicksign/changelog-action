@@ -9,7 +9,7 @@ import { IChangeLog } from '../interfaces'
 
 const fsPromises = fs.promises
 
-export default async function addNewLog({
+export default async function updateChangelog({
   changelogFileName,
   newLog,
   newComments,
