@@ -18,8 +18,11 @@ jobs:
         with:
           node-version: 16.x
 
+      - name: Install yarn
+        run: npm install -g yarn
+
       - name: Install Dependencies
-        run: npm install
+        run: yarn
 
       - name: Run All
         run: npm run all
