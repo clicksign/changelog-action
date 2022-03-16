@@ -2,11 +2,10 @@ import path from 'path'
 
 import {expect} from '@jest/globals'
 
-import getOldlogs from "../src/libs/getOldLogs"
-import countLogsLastInRelease from "../src/libs/quantityLogs"
-import newVersion from "../src/libs/version"
-import mountChangelogWithNewPR from "../src/libs/mountChangelogWithNewPR"
-
+import getOldlogs from '../src/libs/get-old-logs'
+import countLogsLastInRelease from '../src/libs/quantity-logs'
+import newVersion from '../src/libs/version'
+import mountChangelogWithNewPR from '../src/libs/mount-changelog-with-new-pr'
 
 const getOldLogs = async (filePath: string) => {
   const changelogFileName = path.resolve(filePath)
@@ -106,8 +105,8 @@ ${wordFind}\n- ${newLog}
   })
 
   it('should create new version release in changelog', async () => {
-    const newVersionRelease = newVersion("v1.0.0")
-    expect(newVersionRelease).toBe("1.1.0")
+    const newVersionRelease = newVersion('v1.0.0')
+    expect(newVersionRelease).toBe('1.1.0')
   })
 
   it('should quantity logs in last release', async () => {
@@ -116,7 +115,7 @@ ${wordFind}\n- ${newLog}
     const oldLogs2 = await getOldLogs('__tests__/test2.md')
     const oldLogs3 = await getOldLogs('__tests__/test3.md')
     const oldLogs4 = await getOldLogs('__tests__/test4.md')
-    
+
     const quantityLogs2 = countLogsLastInRelease(oldLogs2, wordFind)
     const quantityLogs3 = countLogsLastInRelease(oldLogs3, wordFind)
     const quantityLogs4 = countLogsLastInRelease(oldLogs4, wordFind)

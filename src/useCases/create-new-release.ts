@@ -1,20 +1,19 @@
 import * as core from '@actions/core'
 
-import getOldlogs from "../libs/getOldLogs"
-import newVersion from "../libs/version"
-
-import { ICreateNewRelease } from '../interfaces'
+import {ICreateNewRelease} from '../interfaces'
+import getOldlogs from '../libs/get-old-logs'
+import newVersion from '../libs/version'
 
 function githubToken(): string {
-  const token = process.env.GITHUB_TOKEN;
-  if (!token) throw ReferenceError('No token defined in the environment variables');
-  return token;
+  const token = process.env.GITHUB_TOKEN
+  if (!token)
+    throw ReferenceError('No token defined in the environment variables')
+  return token
 }
 
 export default async function createNewRelease({
-  getOctokit, 
+  getOctokit,
   context,
-  branch,
   sha,
   changelogFileName,
   encoding
@@ -26,15 +25,15 @@ export default async function createNewRelease({
     const logsSplit = oldLogs.split('\n')
     const releaseNewVersion = newVersion(logsSplit[0])
 
-    const toolkit = getOctokit(githubToken());
-    const ref = `refs/heads/release/v${releaseNewVersion}`;
+    const toolkit = getOctokit(githubToken())
+    const ref = `refs/heads/release/v${releaseNewVersion}`
 
     await toolkit.rest.git.createRef({
       ref,
       sha: sha || context.sha,
-      ...context.repo,
-    });
-    
+      ...context.repo
+    })
+
     core.debug(`New release ${releaseNewVersion}`)
   } catch (e: any) {
     throw new Error(e.message)

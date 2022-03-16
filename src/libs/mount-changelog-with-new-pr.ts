@@ -1,9 +1,13 @@
-import {  IMountLog } from '../interfaces'
+import {IMountLog} from '../interfaces'
 
-import countLogsLastInRelease from "./quantityLogs"
-import newVersion from "./version"
+import countLogsLastInRelease from './quantity-logs'
+import newVersion from './version'
 
-export default function mountChangelogWithNewPR({newLog, oldLogs, wordFind}: IMountLog): string {
+export default function mountChangelogWithNewPR({
+  newLog,
+  oldLogs,
+  wordFind
+}: IMountLog): string {
   const logsSplit = oldLogs.split('\n')
 
   if (logsSplit.length === 1) {
@@ -26,7 +30,7 @@ export default function mountChangelogWithNewPR({newLog, oldLogs, wordFind}: IMo
     const fullLogs = logsSplit.join('\n')
     return fullLogs
   }
-  
+
   const fullLogs = logsSplit.join('\n')
   return fullLogs
 }

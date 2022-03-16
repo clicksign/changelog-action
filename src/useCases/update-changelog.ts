@@ -1,11 +1,10 @@
-import fs from 'fs'
-import path from 'path'
 import * as core from '@actions/core'
 
-import getOldlogs from "../libs/getOldLogs"
-import mountChangelogWithNewPR from "../libs/mountChangelogWithNewPR"
-
-import { IChangeLog } from '../interfaces'
+import {IChangeLog} from '../interfaces'
+import fs from 'fs'
+import getOldlogs from '../libs/get-old-logs'
+import mountChangelogWithNewPR from '../libs/mount-changelog-with-new-pr'
+import path from 'path'
 
 const fsPromises = fs.promises
 
