@@ -1,6 +1,12 @@
+# v1.1.0
+
+## Alterações
+---
+
 # v1.0.0
 
 ## Alterações
+- [KZ13345] Fix add GitHub token in action
 - build(deps-dev): bump @typescript-eslint/parser from 5.8.1 to 5.14.0
 - build(deps-dev): bump eslint from 7.32.0 to 8.11.0
 - build(deps): bump actions/checkout from 2 to 3
