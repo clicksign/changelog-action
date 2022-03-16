@@ -23,6 +23,8 @@ jobs:
         with:
           changelog_new_log: ${{ steps.get_message.outputs.MESSAGE }}
           log_find: '## Alterações'
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       - name: Commit Update Changelog
         run: |
