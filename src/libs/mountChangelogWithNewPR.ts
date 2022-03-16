@@ -1,12 +1,7 @@
 import {  IMountLog } from '../interfaces'
 
 import countLogsLastInRelease from "./quantityLogs"
-
-export const newVersion = (oldVersion: string) => {
-  const releaseVersion = oldVersion.split("v")[1].split(".")
-  releaseVersion[1] = (parseInt(releaseVersion[1]) + 1).toString()
-  return releaseVersion.join(".")
-}
+import newVersion from "./version"
 
 export default function mountChangelogWithNewPR({newLog, oldLogs, wordFind}: IMountLog): string {
   const logsSplit = oldLogs.split('\n')

@@ -3,8 +3,10 @@ import path from 'path'
 import {expect} from '@jest/globals'
 
 import getOldlogs from "../src/libs/getOldLogs"
-import mountChangelogWithNewPR, { newVersion } from "../src/libs/mountChangelogWithNewPR"
 import countLogsLastInRelease from "../src/libs/quantityLogs"
+import newVersion from "../src/libs/version"
+import mountChangelogWithNewPR from "../src/libs/mountChangelogWithNewPR"
+
 
 const getOldLogs = async (filePath: string) => {
   const changelogFileName = path.resolve(filePath)
