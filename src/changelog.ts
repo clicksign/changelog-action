@@ -30,6 +30,7 @@ export default async function changelog({
       context,
       sha,
       changelogFileName,
+      commentFind,
       encoding
     })
   } catch (e: any) {

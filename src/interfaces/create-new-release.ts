@@ -5,5 +5,6 @@ export default interface ICreateNewRelease {
   context: Context
   sha?: string
   changelogFileName: string
+  commentFind: string
   encoding: any
 }
