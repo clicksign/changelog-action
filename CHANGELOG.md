@@ -1,6 +1,7 @@
 # v1.1.0
 
 ## Alterações
+- build(deps-dev): bump @types/jest from 27.4.0 to 27.4.1
 ---
 
 # v1.0.0
