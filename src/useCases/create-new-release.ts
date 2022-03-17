@@ -24,23 +24,18 @@ export default async function createNewRelease({
     core.debug(`Get version in ${changelogFileName}`)
 
     const oldLogs = await getOldlogs({changelogFileName, encoding})
-
-    const quantityLogs = countLogsLastInRelease(oldLogs, commentFind)
-    if (quantityLogs <= 4) {
-      return
-    }
-
     const logsSplit = oldLogs.split('\n')
+    const quantityLogs = countLogsLastInRelease(oldLogs, commentFind)
+    if (quantityLogs >= 4) {
+      const toolkit = getOctokit(githubToken())
+      const ref = `refs/heads/release/v${logsSplit[0].split('v')[1]}`
 
-    const toolkit = getOctokit(githubToken())
-    const ref = `refs/heads/release/${logsSplit[0]}`
-
-    await toolkit.rest.git.createRef({
-      ref,
-      sha: sha || context.sha,
-      ...context.repo
-    })
-
+      await toolkit.rest.git.createRef({
+        ref,
+        sha: sha || context.sha,
+        ...context.repo
+      })
+    }
     core.debug(`Current release ${logsSplit[0]}`)
   } catch (e: any) {
     throw new Error(e.message)

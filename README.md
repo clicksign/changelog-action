@@ -2,7 +2,7 @@
   <a href="https://github.com/actions/typescript-action/actions"><img alt="typescript-action status" src="https://github.com/actions/typescript-action/workflows/build-test/badge.svg"></a>
 </p>
 
-# About
+# About 
 
 Action created by clicksign's devops team, this action has the main objective of automating the changelog updates, thus preventing conflicts in the changelog 
 
@@ -32,12 +32,16 @@ Run the tests :heavy_check_mark:
 ```bash
 $ yarn test
 
- PASS  __tests__/main.test.ts
+  PASS  __tests__/main.test.ts
   Cangelog Action
-    ✓ should read file not found (6 ms)
-    ✓ should read file (2 ms)
+    ✓ should read file not found (8 ms)
+    ✓ should read file (3 ms)
     ✓ should mount final log with one line
-    ✓ should mount final log with multi line (11 ms)
+    ✓ should mount final log with multi line
+    ✓ should mount final log with four line (1 ms)
+    ✓ should mount final log with four line (1 ms)
+    ✓ should create new version release in changelog
+    ✓ should quantity logs in last release (1 ms)
 
 ...
 ```
