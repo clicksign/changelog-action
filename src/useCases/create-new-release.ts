@@ -26,6 +26,7 @@ export default async function createNewRelease({
     const logsSplit = oldLogs.split('\n')
     core.debug(`Logs in last release ${logsSplit[0]}`)
     const quantityLogs = countLogsLastInRelease(oldLogs, commentFind)
+    core.debug(`All logs ${oldLogs}`)
     core.debug(`Quantity logs in last release ${quantityLogs}`)
     if (quantityLogs >= 4) {
       const toolkit = getOctokit(githubToken())
