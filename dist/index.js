@@ -58,7 +58,7 @@ function changelog({ changelogFileName, newLog, newComments, logFind, commentFin
                 commentFind,
                 encoding
             });
-            (0, update_changelog_1.default)({
+            yield (0, update_changelog_1.default)({
                 changelogFileName,
                 newLog,
                 newComments,
