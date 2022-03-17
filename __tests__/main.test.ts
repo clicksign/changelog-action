@@ -41,7 +41,7 @@ describe('Cangelog Action', () => {
     const logsSplit = oldLogs.split('\n')
     const currentVersion = logsSplit[0].split('v')[1]
 
-    expect(currentVersion).toBe("1.2.0")
+    expect(currentVersion).toBe('1.2.0')
   })
 
   it('should mount final log with multi line', async () => {

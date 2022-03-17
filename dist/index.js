@@ -63,6 +63,7 @@ function changelog({ changelogFileName, newLog, newComments, logFind, commentFin
                 context: github_1.context,
                 sha,
                 changelogFileName,
+                commentFind,
                 encoding
             });
         }
@@ -300,25 +301,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
+const quantity_logs_1 = __importDefault(__nccwpck_require__(4903));
 const get_old_logs_1 = __importDefault(__nccwpck_require__(4561));
-const version_1 = __importDefault(__nccwpck_require__(3764));
+// TODO: verificar a quantidade de logs, se for maior que 4 cria nova release
 function githubToken() {
     const token = process.env.GITHUB_TOKEN;
     if (!token)
         throw ReferenceError('No token defined in the environment variables');
     return token;
 }
-function createNewRelease({ getOctokit, context, sha, changelogFileName, encoding }) {
+function createNewRelease({ getOctokit, context, sha, changelogFileName, commentFind, encoding }) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             core.debug(`Get version in ${changelogFileName}`);
             const oldLogs = yield (0, get_old_logs_1.default)({ changelogFileName, encoding });
             const logsSplit = oldLogs.split('\n');
-            const releaseNewVersion = (0, version_1.default)(logsSplit[0]);
-            const toolkit = getOctokit(githubToken());
-            const ref = `refs/heads/release/v${releaseNewVersion}`;
-            yield toolkit.rest.git.createRef(Object.assign({ ref, sha: sha || context.sha }, context.repo));
-            core.debug(`New release ${releaseNewVersion}`);
+            core.debug(`Logs in last release ${logsSplit[0]}`);
+            const quantityLogs = (0, quantity_logs_1.default)(oldLogs, commentFind);
+            core.debug(`Quantity logs in last release ${quantityLogs}`);
+            if (quantityLogs >= 4) {
+                const toolkit = getOctokit(githubToken());
+                const ref = `refs/heads/release/v${logsSplit[0].split('v')[1]}`;
+                core.debug(`Current release ${logsSplit[0].split('v')[1]}`);
+                yield toolkit.rest.git.createRef(Object.assign({ ref, sha: sha || context.sha }, context.repo));
+            }
+            core.debug(`Current release ${logsSplit[0]}`);
         }
         catch (e) {
             throw new Error(e.message);
