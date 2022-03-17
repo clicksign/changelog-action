@@ -1,9 +1,10 @@
 import * as core from '@actions/core'
 
 import {ICreateNewRelease} from '../interfaces'
+import countLogsLastInRelease from '../libs/quantity-logs'
 import getOldlogs from '../libs/get-old-logs'
-import newVersion from '../libs/version'
 
+// TODO: verificar a quantidade de logs, se for maior que 4 cria nova release
 function githubToken(): string {
   const token = process.env.GITHUB_TOKEN
   if (!token)
@@ -16,17 +17,23 @@ export default async function createNewRelease({
   context,
   sha,
   changelogFileName,
+  commentFind,
   encoding
 }: ICreateNewRelease): Promise<void> {
   try {
     core.debug(`Get version in ${changelogFileName}`)
 
     const oldLogs = await getOldlogs({changelogFileName, encoding})
+
+    const quantityLogs = countLogsLastInRelease(oldLogs, commentFind)
+    if (quantityLogs <= 4) {
+      return
+    }
+
     const logsSplit = oldLogs.split('\n')
-    const releaseNewVersion = newVersion(logsSplit[0])
 
     const toolkit = getOctokit(githubToken())
-    const ref = `refs/heads/release/v${releaseNewVersion}`
+    const ref = `refs/heads/release/${logsSplit[0]}`
 
     await toolkit.rest.git.createRef({
       ref,
@@ -34,7 +41,7 @@ export default async function createNewRelease({
       ...context.repo
     })
 
-    core.debug(`New release ${releaseNewVersion}`)
+    core.debug(`New release ${logsSplit[0]}`)
   } catch (e: any) {
     throw new Error(e.message)
   }
