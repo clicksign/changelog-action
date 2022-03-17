@@ -1,6 +1,12 @@
+# v1.2.0
+
+## Alterações
+---
+
 # v1.1.0
 
 ## Alterações
+- [DEVOPS] Add await in update changelog
 - [DEVOPS] Change posigion function in changelog file
 - Feature/teste
 - fix: test
