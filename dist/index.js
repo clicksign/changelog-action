@@ -160,7 +160,7 @@ exports["default"] = mountChangelogWithNewPR;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 function countLogsLastInRelease(oldLogs, wordFind) {
     const text = oldLogs.split('---')[0].split(wordFind)[1];
-    const quantityLogsInLastRelease = (text.match(/- /g) || []).length;
+    const quantityLogsInLastRelease = (text.match(/-/g) || []).length;
     return quantityLogsInLastRelease;
 }
 exports["default"] = countLogsLastInRelease;
@@ -317,7 +317,6 @@ function createNewRelease({ getOctokit, context, sha, changelogFileName, comment
             const logsSplit = oldLogs.split('\n');
             core.debug(`Logs in last release ${logsSplit[0]}`);
             const quantityLogs = (0, quantity_logs_1.default)(oldLogs, commentFind);
-            core.debug(`All logs ${oldLogs}`);
             core.debug(`Quantity logs in last release ${quantityLogs}`);
             if (quantityLogs >= 4) {
                 const toolkit = getOctokit(githubToken());
