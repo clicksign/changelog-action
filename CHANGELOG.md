@@ -1,6 +1,12 @@
+# v1.2.0
+
+## Alterações
+---
+
 # v1.1.0
 
 ## Alterações
+- fix: test3
 - fix: test2
 - fix: test
 - [DEVOPS] test
