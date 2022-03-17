@@ -1,12 +1,7 @@
-# v1.1.0
-
-## Alterações
-- build(deps-dev): bump @types/jest from 27.4.0 to 27.4.1
----
-
 # v1.0.0
 
 ## Alterações
+- build(deps-dev): bump @types/jest from 27.4.0 to 27.4.1
 - build(deps-dev): bump prettier from 2.5.1 to 2.6.0
 - [KZ12345] Create release when have four more logs
 - [KZ13345] Fix add GitHub token in action
