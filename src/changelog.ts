@@ -14,15 +14,6 @@ export default async function changelog({
   encoding
 }: IChangeLog): Promise<void> {
   try {
-    updateChangelog({
-      changelogFileName,
-      newLog,
-      newComments,
-      logFind,
-      commentFind,
-      encoding
-    })
-
     const sha = core.getInput('sha')
 
     await createNewRelease({
@@ -30,6 +21,15 @@ export default async function changelog({
       context,
       sha,
       changelogFileName,
+      commentFind,
+      encoding
+    })
+
+    updateChangelog({
+      changelogFileName,
+      newLog,
+      newComments,
+      logFind,
       commentFind,
       encoding
     })

@@ -49,20 +49,20 @@ const create_new_release_1 = __importDefault(__nccwpck_require__(8011));
 function changelog({ changelogFileName, newLog, newComments, logFind, commentFind, encoding }) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            (0, update_changelog_1.default)({
-                changelogFileName,
-                newLog,
-                newComments,
-                logFind,
-                commentFind,
-                encoding
-            });
             const sha = core.getInput('sha');
             yield (0, create_new_release_1.default)({
                 getOctokit: github_1.getOctokit,
                 context: github_1.context,
                 sha,
                 changelogFileName,
+                commentFind,
+                encoding
+            });
+            (0, update_changelog_1.default)({
+                changelogFileName,
+                newLog,
+                newComments,
+                logFind,
                 commentFind,
                 encoding
             });
@@ -314,9 +314,9 @@ function createNewRelease({ getOctokit, context, sha, changelogFileName, comment
         try {
             core.debug(`Get version in ${changelogFileName}`);
             const oldLogs = yield (0, get_old_logs_1.default)({ changelogFileName, encoding });
+            const quantityLogs = (0, quantity_logs_1.default)(oldLogs, commentFind);
             const logsSplit = oldLogs.split('\n');
             core.debug(`Logs in last release ${logsSplit[0]}`);
-            const quantityLogs = (0, quantity_logs_1.default)(oldLogs, commentFind);
             core.debug(`Quantity logs in last release ${quantityLogs}`);
             if (quantityLogs >= 4) {
                 const toolkit = getOctokit(githubToken());

@@ -23,12 +23,11 @@ export default async function createNewRelease({
     core.debug(`Get version in ${changelogFileName}`)
 
     const oldLogs = await getOldlogs({changelogFileName, encoding})
+    const quantityLogs = countLogsLastInRelease(oldLogs, commentFind)
+
     const logsSplit = oldLogs.split('\n')
 
     core.debug(`Logs in last release ${logsSplit[0]}`)
-
-    const quantityLogs = countLogsLastInRelease(oldLogs, commentFind)
-
     core.debug(`Quantity logs in last release ${quantityLogs}`)
 
     if (quantityLogs >= 4) {
