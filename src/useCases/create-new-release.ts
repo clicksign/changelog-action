@@ -4,7 +4,6 @@ import {ICreateNewRelease} from '../interfaces'
 import countLogsLastInRelease from '../libs/quantity-logs'
 import getOldlogs from '../libs/get-old-logs'
 
-// TODO: verificar a quantidade de logs, se for maior que 4 cria nova release
 function githubToken(): string {
   const token = process.env.GITHUB_TOKEN
   if (!token)

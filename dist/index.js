@@ -303,7 +303,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const quantity_logs_1 = __importDefault(__nccwpck_require__(4903));
 const get_old_logs_1 = __importDefault(__nccwpck_require__(4561));
-// TODO: verificar a quantidade de logs, se for maior que 4 cria nova release
 function githubToken() {
     const token = process.env.GITHUB_TOKEN;
     if (!token)
