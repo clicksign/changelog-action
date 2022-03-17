@@ -36,6 +36,14 @@ describe('Cangelog Action', () => {
     expect(`${oldLogs}\n- ${newLog}`).toBe(finalLog)
   })
 
+  it('should get current version', async () => {
+    const oldLogs = await getOldLogs('__tests__/test5.md')
+    const logsSplit = oldLogs.split('\n')
+    const currentVersion = logsSplit[0].split('v')[1]
+
+    expect(currentVersion).toBe("1.2.0")
+  })
+
   it('should mount final log with multi line', async () => {
     const newLog = 'add log'
     const oldLogs = await getOldLogs('__tests__/test2.md')
