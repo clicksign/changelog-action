@@ -35,9 +35,8 @@ export default async function createNewRelease({
         sha: sha || context.sha,
         ...context.repo
       })
-
-      core.debug(`New release ${logsSplit[0]}`)
     }
+    core.debug(`Current release ${logsSplit[0]}`)
   } catch (e: any) {
     throw new Error(e.message)
   }
