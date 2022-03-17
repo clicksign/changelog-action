@@ -1,6 +1,12 @@
+# v1.1.0
+
+## Alterações
+---
+
 # v1.0.0
 
 ## Alterações
+- build(deps-dev): bump prettier from 2.5.1 to 2.6.0
 - [KZ12345] Create release when have four more logs
 - [KZ13345] Fix add GitHub token in action
 - build(deps-dev): bump @typescript-eslint/parser from 5.8.1 to 5.14.0
