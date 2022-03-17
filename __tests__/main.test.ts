@@ -115,13 +115,16 @@ ${wordFind}\n- ${newLog}
     const oldLogs2 = await getOldLogs('__tests__/test2.md')
     const oldLogs3 = await getOldLogs('__tests__/test3.md')
     const oldLogs4 = await getOldLogs('__tests__/test4.md')
+    const oldLogs5 = await getOldLogs('__tests__/test5.md')
 
     const quantityLogs2 = countLogsLastInRelease(oldLogs2, wordFind)
     const quantityLogs3 = countLogsLastInRelease(oldLogs3, wordFind)
     const quantityLogs4 = countLogsLastInRelease(oldLogs4, wordFind)
+    const quantityLogs5 = countLogsLastInRelease(oldLogs5, wordFind)
 
     expect(quantityLogs2).toBe(0)
     expect(quantityLogs3).toBe(3)
     expect(quantityLogs4).toBe(4)
+    expect(quantityLogs5).toBe(0)
   })
 })
