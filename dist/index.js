@@ -317,6 +317,7 @@ function createNewRelease({ getOctokit, context, sha, changelogFileName, comment
             const logsSplit = oldLogs.split('\n');
             core.debug(`Logs in last release ${logsSplit[0]}`);
             const quantityLogs = (0, quantity_logs_1.default)(oldLogs, commentFind);
+            core.debug(`All logs ${oldLogs}`);
             core.debug(`Quantity logs in last release ${quantityLogs}`);
             if (quantityLogs >= 4) {
                 const toolkit = getOctokit(githubToken());
