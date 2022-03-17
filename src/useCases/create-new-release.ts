@@ -33,7 +33,7 @@ export default async function createNewRelease({
     const logsSplit = oldLogs.split('\n')
 
     const toolkit = getOctokit(githubToken())
-    const ref = `refs/heads/release/${logsSplit[0]}`
+    const ref = `refs/heads/release/v${logsSplit[0].split('v')[1]}`
 
     await toolkit.rest.git.createRef({
       ref,
