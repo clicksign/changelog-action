@@ -1,6 +1,7 @@
 # v1.1.0
 
 ## Alterações
+- [DEVOPS] test
 - [DEVOPS] Update release name
 ---
 
