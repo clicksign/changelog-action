@@ -21,7 +21,7 @@ export default async function changelog({
       context,
       sha,
       changelogFileName,
-      commentFind,
+      logFind,
       encoding
     })
 

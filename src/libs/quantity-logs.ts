@@ -3,6 +3,6 @@ export default function countLogsLastInRelease(
   wordFind: string
 ): number {
   const text = oldLogs.split('---')[0].split(wordFind)[1]
-  const quantityLogsInLastRelease = (text.match(/-/g) || []).length
+  const quantityLogsInLastRelease = (text.match(/- /g) || []).length
   return quantityLogsInLastRelease
 }
