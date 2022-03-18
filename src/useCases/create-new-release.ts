@@ -16,14 +16,14 @@ export default async function createNewRelease({
   context,
   sha,
   changelogFileName,
-  commentFind,
+  logFind,
   encoding
 }: ICreateNewRelease): Promise<void> {
   try {
     core.debug(`Get version in ${changelogFileName}`)
 
     const oldLogs = await getOldlogs({changelogFileName, encoding})
-    const quantityLogs = countLogsLastInRelease(oldLogs, commentFind)
+    const quantityLogs = countLogsLastInRelease(oldLogs, logFind)
 
     const logsSplit = oldLogs.split('\n')
 
