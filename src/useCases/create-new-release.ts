@@ -1,8 +1,4 @@
-import * as core from '@actions/core'
-
 import {ICreateNewRelease} from '../interfaces'
-import countLogsLastInRelease from '../libs/quantity-logs'
-import getOldlogs from '../libs/get-old-logs'
 
 function githubToken(): string {
   const token = process.env.GITHUB_TOKEN
@@ -15,34 +11,17 @@ export default async function createNewRelease({
   getOctokit,
   context,
   sha,
-  changelogFileName,
-  logFind,
-  encoding
+  logsSplit
 }: ICreateNewRelease): Promise<void> {
   try {
-    core.debug(`Get version in ${changelogFileName}`)
+    const toolkit = getOctokit(githubToken())
+    const ref = `refs/heads/release/v${logsSplit[0].split('v')[1]}`
 
-    const oldLogs = await getOldlogs({changelogFileName, encoding})
-    const quantityLogs = countLogsLastInRelease(oldLogs, logFind)
-
-    const logsSplit = oldLogs.split('\n')
-
-    core.debug(`Logs in last release ${logsSplit[0]}`)
-    core.debug(`Quantity logs in last release ${quantityLogs}`)
-
-    if (quantityLogs >= 4) {
-      const toolkit = getOctokit(githubToken())
-      const ref = `refs/heads/release/v${logsSplit[0].split('v')[1]}`
-
-      core.debug(`Current release ${logsSplit[0].split('v')[1]}`)
-
-      await toolkit.rest.git.createRef({
-        ref,
-        sha: sha || context.sha,
-        ...context.repo
-      })
-    }
-    core.debug(`Current release ${logsSplit[0]}`)
+    await toolkit.rest.git.createRef({
+      ref,
+      sha: sha || context.sha,
+      ...context.repo
+    })
   } catch (e: any) {
     throw new Error(e.message)
   }

@@ -1,12 +1,8 @@
-import * as core from '@actions/core'
-
 export default function countLogsLastInRelease(
   oldLogs: string,
-  wordFind: string
+  logFind: string
 ): number {
-  const text = oldLogs.split('---')[0].split(wordFind)[1]
-  core.debug(`Word find ${wordFind}`)
-  core.debug(`Text quantity ${text}`)
+  const text = oldLogs.split('---')[0].split(logFind)[1]
   const quantityLogsInLastRelease = (text.match(/- /g) || []).length
   return quantityLogsInLastRelease
 }

@@ -30,9 +30,15 @@ describe('Cangelog Action', () => {
   it('should mount final log with one line', async () => {
     const newLog = 'add log'
     const oldLogs = await getOldLogs('__tests__/test.md')
-    const wordFind = 'file read test'
+    const logFind = 'file read test'
+    const quantityLogs = countLogsLastInRelease(oldLogs, logFind)
 
-    const finalLog = mountChangelogWithNewPR({newLog, oldLogs, wordFind})
+    const finalLog = mountChangelogWithNewPR({
+      newLog,
+      oldLogs,
+      logFind,
+      quantityLogs
+    })
     expect(`${oldLogs}\n- ${newLog}`).toBe(finalLog)
   })
 
@@ -47,40 +53,53 @@ describe('Cangelog Action', () => {
   it('should mount final log with multi line', async () => {
     const newLog = 'add log'
     const oldLogs = await getOldLogs('__tests__/test2.md')
-    const wordFind = '## Alterações'
+    const logFind = '## Alterações'
+    const quantityLogs = countLogsLastInRelease(oldLogs, logFind)
 
     const log = `# v1.0.0
 
-${wordFind}\n- ${newLog}
+${logFind}\n- ${newLog}
 ---
 `
 
-    const finalLog = mountChangelogWithNewPR({newLog, oldLogs, wordFind})
+    const finalLog = mountChangelogWithNewPR({
+      newLog,
+      oldLogs,
+      logFind,
+      quantityLogs
+    })
     expect(log).toBe(finalLog)
   })
 
   it('should mount final log with four line', async () => {
     const newLog = '[KZ1] Line 4'
     const oldLogs = await getOldLogs('__tests__/test3.md')
-    const wordFind = '## Alterações'
+    const logFind = '## Alterações'
+    const quantityLogs = countLogsLastInRelease(oldLogs, logFind)
 
     const log = `# v1.0.0
 
-${wordFind}\n- ${newLog}
+${logFind}\n- ${newLog}
 - [KZ1] Line 3
 - [KZ1] Line 2
 - [KZ1] Line 1
 ---
 `
 
-    const finalLog = mountChangelogWithNewPR({newLog, oldLogs, wordFind})
+    const finalLog = mountChangelogWithNewPR({
+      newLog,
+      oldLogs,
+      logFind,
+      quantityLogs
+    })
     expect(log).toBe(finalLog)
   })
 
   it('should mount final log with four line', async () => {
     const newLog = '[KZ123] Line 5'
     const oldLogs = await getOldLogs('__tests__/test4.md')
-    const wordFind = '## Alterações'
+    const logFind = '## Alterações'
+    const quantityLogs = countLogsLastInRelease(oldLogs, logFind)
 
     const log = `# v1.2.0
 
@@ -108,7 +127,12 @@ ${wordFind}\n- ${newLog}
 ---
 `
 
-    const finalLog = mountChangelogWithNewPR({newLog, oldLogs, wordFind})
+    const finalLog = mountChangelogWithNewPR({
+      newLog,
+      oldLogs,
+      logFind,
+      quantityLogs
+    })
     expect(log).toBe(finalLog)
   })
 
