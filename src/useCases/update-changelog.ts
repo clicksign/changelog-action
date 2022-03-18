@@ -1,8 +1,7 @@
 import * as core from '@actions/core'
 
-import {IChangeLog} from '../interfaces'
+import {IUpdateChangelog} from '../interfaces'
 import fs from 'fs'
-import getOldlogs from '../libs/get-old-logs'
 import mountChangelogWithNewPR from '../libs/mount-changelog-with-new-pr'
 import path from 'path'
 
@@ -14,18 +13,17 @@ export default async function updateChangelog({
   newComments,
   logFind,
   commentFind,
-  encoding
-}: IChangeLog): Promise<void> {
+  encoding,
+  oldLogs,
+  quantityLogs
+}: IUpdateChangelog): Promise<void> {
   try {
-    core.debug(`File add log ${changelogFileName}`)
-
-    const oldLogs = await getOldlogs({changelogFileName, encoding})
-
     if (newComments?.length) {
       const fullLogsWithComment = mountChangelogWithNewPR({
         newLog: newComments,
         oldLogs,
-        wordFind: commentFind
+        logFind: commentFind,
+        quantityLogs
       })
 
       core.debug(`New comments add ${newComments}`)
@@ -40,10 +38,9 @@ export default async function updateChangelog({
     const fullLogsWithLog = mountChangelogWithNewPR({
       newLog,
       oldLogs,
-      wordFind: logFind
+      logFind,
+      quantityLogs
     })
-
-    core.debug(`New log add ${newLog}`)
 
     await fsPromises.writeFile(
       path.resolve(changelogFileName),

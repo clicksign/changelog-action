@@ -46,26 +46,39 @@ const github_1 = __nccwpck_require__(5438);
 const core = __importStar(__nccwpck_require__(2186));
 const update_changelog_1 = __importDefault(__nccwpck_require__(4846));
 const create_new_release_1 = __importDefault(__nccwpck_require__(8011));
+const quantity_logs_1 = __importDefault(__nccwpck_require__(4903));
+const get_old_logs_1 = __importDefault(__nccwpck_require__(4561));
 function changelog({ changelogFileName, newLog, newComments, logFind, commentFind, encoding }) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            core.debug(`Name File: ${changelogFileName}`);
+            core.debug(`Initial log find: ${logFind}`);
+            core.debug(`New log add: ${newLog}`);
             const sha = core.getInput('sha');
-            yield (0, create_new_release_1.default)({
-                getOctokit: github_1.getOctokit,
-                context: github_1.context,
-                sha,
-                changelogFileName,
-                logFind,
-                encoding
-            });
+            const oldLogs = yield (0, get_old_logs_1.default)({ changelogFileName, encoding });
+            const quantityLogs = (0, quantity_logs_1.default)(oldLogs, logFind);
+            const logsSplit = oldLogs.split('\n');
+            core.debug(`Current release: ${logsSplit[0]}`);
+            core.debug(`Quantity logs in ${logsSplit[0]}: ${quantityLogs}`);
+            // TODOL send quantity log, oldlogs, logSplit
             yield (0, update_changelog_1.default)({
                 changelogFileName,
                 newLog,
                 newComments,
                 logFind,
                 commentFind,
-                encoding
+                encoding,
+                oldLogs,
+                quantityLogs
             });
+            if (quantityLogs >= 4) {
+                yield (0, create_new_release_1.default)({
+                    getOctokit: github_1.getOctokit,
+                    context: github_1.context,
+                    sha,
+                    logsSplit
+                });
+            }
         }
         catch (e) {
             throw new Error(e.message);
@@ -123,23 +136,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const quantity_logs_1 = __importDefault(__nccwpck_require__(4903));
 const version_1 = __importDefault(__nccwpck_require__(3764));
-function mountChangelogWithNewPR({ newLog, oldLogs, wordFind }) {
+function mountChangelogWithNewPR({ newLog, oldLogs, logFind, quantityLogs }) {
     const logsSplit = oldLogs.split('\n');
     if (logsSplit.length === 1) {
-        return `${wordFind}\n- ${newLog}`;
+        return `${logFind}\n- ${newLog}`;
     }
     const firstIndexWord = logsSplit.findIndex((word, index) => {
-        if (word === wordFind) {
+        if (word === logFind) {
             return index;
         }
     });
-    logsSplit[firstIndexWord] = `${wordFind}\n- ${newLog}`;
-    const quantityLogs = (0, quantity_logs_1.default)(oldLogs, wordFind);
+    logsSplit[firstIndexWord] = `${logFind}\n- ${newLog}`;
     if (quantityLogs >= 4) {
         const releaseNewVersion = (0, version_1.default)(logsSplit[0]);
-        const changelogWithNewVersion = `# v${releaseNewVersion}\n\n${wordFind}\n---\n\n${logsSplit[0]}`;
+        const changelogWithNewVersion = `# v${releaseNewVersion}\n\n${logFind}\n---\n\n${logsSplit[0]}`;
         logsSplit[0] = changelogWithNewVersion;
         const fullLogs = logsSplit.join('\n');
         return fullLogs;
@@ -153,39 +164,13 @@ exports["default"] = mountChangelogWithNewPR;
 /***/ }),
 
 /***/ 4903:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+/***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core = __importStar(__nccwpck_require__(2186));
-function countLogsLastInRelease(oldLogs, wordFind) {
-    const text = oldLogs.split('---')[0].split(wordFind)[1];
-    core.debug(`Word find ${wordFind}`);
-    core.debug(`Text quantity ${text}`);
+function countLogsLastInRelease(oldLogs, logFind) {
+    const text = oldLogs.split('---')[0].split(logFind)[1];
     const quantityLogsInLastRelease = (text.match(/- /g) || []).length;
     return quantityLogsInLastRelease;
 }
@@ -286,33 +271,10 @@ run();
 /***/ }),
 
 /***/ 8011:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+/***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -322,35 +284,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core = __importStar(__nccwpck_require__(2186));
-const quantity_logs_1 = __importDefault(__nccwpck_require__(4903));
-const get_old_logs_1 = __importDefault(__nccwpck_require__(4561));
 function githubToken() {
     const token = process.env.GITHUB_TOKEN;
     if (!token)
         throw ReferenceError('No token defined in the environment variables');
     return token;
 }
-function createNewRelease({ getOctokit, context, sha, changelogFileName, logFind, encoding }) {
+function createNewRelease({ getOctokit, context, sha, logsSplit }) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            core.debug(`Get version in ${changelogFileName}`);
-            const oldLogs = yield (0, get_old_logs_1.default)({ changelogFileName, encoding });
-            const quantityLogs = (0, quantity_logs_1.default)(oldLogs, logFind);
-            const logsSplit = oldLogs.split('\n');
-            core.debug(`Logs in last release ${logsSplit[0]}`);
-            core.debug(`Quantity logs in last release ${quantityLogs}`);
-            if (quantityLogs >= 4) {
-                const toolkit = getOctokit(githubToken());
-                const ref = `refs/heads/release/v${logsSplit[0].split('v')[1]}`;
-                core.debug(`Current release ${logsSplit[0].split('v')[1]}`);
-                yield toolkit.rest.git.createRef(Object.assign({ ref, sha: sha || context.sha }, context.repo));
-            }
-            core.debug(`Current release ${logsSplit[0]}`);
+            const toolkit = getOctokit(githubToken());
+            const ref = `refs/heads/release/v${logsSplit[0].split('v')[1]}`;
+            yield toolkit.rest.git.createRef(Object.assign({ ref, sha: sha || context.sha }, context.repo));
         }
         catch (e) {
             throw new Error(e.message);
@@ -405,20 +351,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const fs_1 = __importDefault(__nccwpck_require__(7147));
-const get_old_logs_1 = __importDefault(__nccwpck_require__(4561));
 const mount_changelog_with_new_pr_1 = __importDefault(__nccwpck_require__(2179));
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const fsPromises = fs_1.default.promises;
-function updateChangelog({ changelogFileName, newLog, newComments, logFind, commentFind, encoding }) {
+function updateChangelog({ changelogFileName, newLog, newComments, logFind, commentFind, encoding, oldLogs, quantityLogs }) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            core.debug(`File add log ${changelogFileName}`);
-            const oldLogs = yield (0, get_old_logs_1.default)({ changelogFileName, encoding });
             if (newComments === null || newComments === void 0 ? void 0 : newComments.length) {
                 const fullLogsWithComment = (0, mount_changelog_with_new_pr_1.default)({
                     newLog: newComments,
                     oldLogs,
-                    wordFind: commentFind
+                    logFind: commentFind,
+                    quantityLogs
                 });
                 core.debug(`New comments add ${newComments}`);
                 yield fsPromises.writeFile(path_1.default.resolve(changelogFileName), fullLogsWithComment, encoding);
@@ -426,9 +370,9 @@ function updateChangelog({ changelogFileName, newLog, newComments, logFind, comm
             const fullLogsWithLog = (0, mount_changelog_with_new_pr_1.default)({
                 newLog,
                 oldLogs,
-                wordFind: logFind
+                logFind,
+                quantityLogs
             });
-            core.debug(`New log add ${newLog}`);
             yield fsPromises.writeFile(path_1.default.resolve(changelogFileName), fullLogsWithLog, encoding);
         }
         catch (e) {
