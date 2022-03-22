@@ -1,7 +1,7 @@
 import {Context} from '@actions/github/lib/context'
 
 export default interface ICreateNewRelease {
-  getOctokit: any
+  toolkit: any
   context: Context
   sha?: string
   logsSplit: string[]

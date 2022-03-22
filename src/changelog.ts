@@ -7,6 +7,13 @@ import createNewRelease from './useCases/create-new-release'
 import countLogsLastInRelease from './libs/quantity-logs'
 import getOldlogs from './libs/get-old-logs'
 
+function githubToken(): string {
+  const token = process.env.GITHUB_TOKEN
+  if (!token)
+    throw ReferenceError('No token defined in the environment variables')
+  return token
+}
+
 export default async function changelog({
   changelogFileName,
   newLog,
@@ -20,6 +27,8 @@ export default async function changelog({
     core.debug(`Initial log find: ${logFind}`)
     core.debug(`New log add: ${newLog}`)
 
+    const toolkit = getOctokit(githubToken())
+
     const sha = core.getInput('sha')
 
     const oldLogs = await getOldlogs({changelogFileName, encoding})
@@ -31,6 +40,8 @@ export default async function changelog({
 
     // TODOL send quantity log, oldlogs, logSplit
     await updateChangelog({
+      toolkit,
+      context,
       changelogFileName,
       newLog,
       newComments,
@@ -43,7 +54,7 @@ export default async function changelog({
 
     if (quantityLogs >= 4) {
       await createNewRelease({
-        getOctokit,
+        toolkit,
         context,
         sha,
         logsSplit
