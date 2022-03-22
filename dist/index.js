@@ -71,7 +71,6 @@ function changelog({ changelogFileName, newLog, newComments, logFind, commentFin
             yield (0, update_changelog_1.default)({
                 toolkit,
                 context: github_1.context,
-                sha,
                 changelogFileName,
                 newLog,
                 newComments,
@@ -357,7 +356,7 @@ const fs_1 = __importDefault(__nccwpck_require__(7147));
 const mount_changelog_with_new_pr_1 = __importDefault(__nccwpck_require__(2179));
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const fsPromises = fs_1.default.promises;
-function updateChangelog({ toolkit, context, sha, changelogFileName, newLog, newComments, logFind, commentFind, encoding, oldLogs, quantityLogs }) {
+function updateChangelog({ toolkit, context, changelogFileName, newLog, newComments, logFind, commentFind, encoding, oldLogs, quantityLogs }) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             if (newComments === null || newComments === void 0 ? void 0 : newComments.length) {
@@ -377,18 +376,17 @@ function updateChangelog({ toolkit, context, sha, changelogFileName, newLog, new
                 quantityLogs
             });
             yield fsPromises.writeFile(path_1.default.resolve(changelogFileName), fullLogsWithLog, encoding);
-            let response = yield toolkit.rest.repos.listCommits(Object.assign(Object.assign({}, context.repo), { sha: sha || context.sha, per_page: 1 }));
-            const latestCommitSha = response.data[0].sha;
-            const treeSha = response.data[0].commit.tree.sha;
-            response = yield toolkit.rest.git.createTree(Object.assign(Object.assign({}, context.repo), { tree: [
-                    {
-                        mode: '100644',
-                        path: 'CHANGELOG.md',
-                        content: 'udpate changelog'
-                    }
-                ], base_tree: treeSha }));
-            const newTreeSha = response.data.sha;
-            const { data: { sha: newCommitSHA } } = yield toolkit.rest.git.createCommit(Object.assign(Object.assign({}, context.repo), { tree: newTreeSha, parents: [latestCommitSha], message: 'action: atualizando changelog' }));
+            const file = [
+                {
+                    mode: '100644',
+                    path: 'CHANGELOG.md',
+                    content: fullLogsWithLog
+                }
+            ];
+            const commits = yield toolkit.rest.repos.listCommits(Object.assign({}, context.repo));
+            const latestCommitSHA = commits.data[0].sha;
+            const { data: { sha: newTreeSha } } = yield toolkit.rest.git.createTree(Object.assign(Object.assign({}, context.repo), { tree: file, base_tree: latestCommitSHA }));
+            const { data: { sha: newCommitSHA } } = yield toolkit.rest.git.createCommit(Object.assign(Object.assign({}, context.repo), { tree: newTreeSha, parents: [latestCommitSHA], message: 'action: atualizando changelog' }));
             yield toolkit.rest.git.updateRef(Object.assign(Object.assign({}, context.repo), { sha: newCommitSHA, ref: `heads/main`, force: true }));
         }
         catch (e) {

@@ -10,7 +10,6 @@ const fsPromises = fs.promises
 export default async function updateChangelog({
   toolkit,
   context,
-  sha,
   changelogFileName,
   newLog,
   newComments,
@@ -51,17 +50,21 @@ export default async function updateChangelog({
       encoding
     )
 
-    const file = [{
-      mode: '100644',
-      path: 'CHANGELOG.md',
-      content: fullLogsWithLog
-    }]
+    const file = [
+      {
+        mode: '100644',
+        path: 'CHANGELOG.md',
+        content: fullLogsWithLog
+      }
+    ]
 
-    const commits =  await toolkit.rest.repos.listCommits({...context.repo});
+    const commits = await toolkit.rest.repos.listCommits({...context.repo})
 
-    const latestCommitSHA = commits.data[0].sha;
+    const latestCommitSHA = commits.data[0].sha
 
-    const {data: { sha: newTreeSha }} = await toolkit.rest.git.createTree({
+    const {
+      data: {sha: newTreeSha}
+    } = await toolkit.rest.git.createTree({
       ...context.repo,
       tree: file,
       base_tree: latestCommitSHA
