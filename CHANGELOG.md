@@ -1,6 +1,12 @@
+# v1.2.0
+
+## Alterações
+---
+
 # v1.1.0
 
 ## Alterações
+- devops: add create commit teste
 - [DEVOPS] Update changelog action
 - [DEVOPS] Update list
 - [DEVOPS] Change comment find to log find
