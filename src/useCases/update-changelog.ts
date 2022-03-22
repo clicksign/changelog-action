@@ -8,6 +8,8 @@ import path from 'path'
 const fsPromises = fs.promises
 
 export default async function updateChangelog({
+  toolkit,
+  context,
   changelogFileName,
   newLog,
   newComments,
@@ -47,6 +49,11 @@ export default async function updateChangelog({
       fullLogsWithLog,
       encoding
     )
+
+    await toolkit.rest.git.createRef({
+      message: "action: atualizando changelog",
+      ...context.repo
+    })
   } catch (e: any) {
     throw new Error(e.message)
   }
