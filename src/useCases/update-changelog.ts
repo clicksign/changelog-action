@@ -10,6 +10,7 @@ const fsPromises = fs.promises
 export default async function updateChangelog({
   toolkit,
   context,
+  sha,
   changelogFileName,
   newLog,
   newComments,
@@ -50,9 +51,10 @@ export default async function updateChangelog({
       encoding
     )
 
-    await toolkit.rest.git.createRef({
+    await toolkit.rest.git.createCommit({
+      ...context.repo,
+      tree: sha || context.sha,
       message: "action: atualizando changelog",
-      ...context.repo
     })
   } catch (e: any) {
     throw new Error(e.message)
