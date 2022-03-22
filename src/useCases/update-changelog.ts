@@ -75,10 +75,6 @@ export default async function updateChangelog({
 
     await toolkit.rest.git.createCommit({
       ...context.repo,
-      author: {
-        name: context.actor,
-        email: ''
-      },
       tree: newTreeSha,
       parents: [latestCommitSha],
       message: 'action: atualizando changelog'
