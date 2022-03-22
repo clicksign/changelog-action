@@ -55,7 +55,7 @@ export default async function updateChangelog({
       ...context.repo,
       author: {
         name: context.actor,
-        email: ""
+        email: ''
       },
       tree: sha || context.sha,
       message: 'action: atualizando changelog'

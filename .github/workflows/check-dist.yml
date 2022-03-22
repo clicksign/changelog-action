@@ -14,6 +14,7 @@ on:
 jobs:
   check-dist:
     runs-on: ubuntu-latest
+    if: "!startsWith(github.event.head_commit.message, 'Merge') || github.event.pull_request.draft == false"
 
     steps:
       - name: Checkout Github
