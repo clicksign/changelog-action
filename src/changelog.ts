@@ -26,7 +26,6 @@ export default async function changelog({
     core.debug(`Name File: ${changelogFileName}`)
     core.debug(`Initial log find: ${logFind}`)
     core.debug(`New log add: ${newLog}`)
-    core.debug(`${context.repo}`)
 
     const toolkit = getOctokit(githubToken())
 
@@ -43,6 +42,7 @@ export default async function changelog({
     await updateChangelog({
       toolkit,
       context,
+      sha,
       changelogFileName,
       newLog,
       newComments,
