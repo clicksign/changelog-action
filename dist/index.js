@@ -388,8 +388,8 @@ function updateChangelog({ toolkit, context, sha, changelogFileName, newLog, new
                     }
                 ], base_tree: treeSha }));
             const newTreeSha = response.data.sha;
-            response = yield toolkit.rest.git.createCommit(Object.assign(Object.assign({}, context.repo), { tree: newTreeSha, parents: [latestCommitSha], message: 'action: atualizando changelog' }));
-            yield toolkit.rest.git.updateRef(Object.assign(Object.assign({}, context.repo), { sha: latestCommitSha, ref: `refs/heads/main`, force: true }));
+            const { data: { sha: newCommitSHA } } = yield toolkit.rest.git.createCommit(Object.assign(Object.assign({}, context.repo), { tree: newTreeSha, parents: [latestCommitSha], message: 'action: atualizando changelog' }));
+            yield toolkit.rest.git.updateRef(Object.assign(Object.assign({}, context.repo), { sha: newCommitSHA, ref: `heads/main`, force: true }));
         }
         catch (e) {
             throw new Error(e.message);
