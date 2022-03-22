@@ -377,7 +377,10 @@ function updateChangelog({ toolkit, context, sha, changelogFileName, newLog, new
                 quantityLogs
             });
             yield fsPromises.writeFile(path_1.default.resolve(changelogFileName), fullLogsWithLog, encoding);
-            yield toolkit.rest.git.createCommit(Object.assign(Object.assign({}, context.repo), { author: context.actor, tree: sha || context.sha, message: "action: atualizando changelog" }));
+            yield toolkit.rest.git.createCommit(Object.assign(Object.assign({}, context.repo), { author: {
+                    name: context.actor,
+                    email: ""
+                }, tree: sha || context.sha, message: 'action: atualizando changelog' }));
         }
         catch (e) {
             throw new Error(e.message);
