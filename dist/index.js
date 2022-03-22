@@ -377,10 +377,10 @@ function updateChangelog({ toolkit, context, sha, changelogFileName, newLog, new
                 quantityLogs
             });
             yield fsPromises.writeFile(path_1.default.resolve(changelogFileName), fullLogsWithLog, encoding);
-            let response = yield toolkit.repos.listCommits(Object.assign(Object.assign({}, context.repo), { sha: sha || context.sha, per_page: 1 }));
+            let response = yield toolkit.rest.repos.listCommits(Object.assign(Object.assign({}, context.repo), { sha: sha || context.sha, per_page: 1 }));
             const latestCommitSha = response.data[0].sha;
             const treeSha = response.data[0].commit.tree.sha;
-            response = yield toolkit.git.createTree(Object.assign(Object.assign({}, context.repo), { tree: [
+            response = yield toolkit.rest.git.createTree(Object.assign(Object.assign({}, context.repo), { tree: [
                     {
                         mode: '100644',
                         path: 'CHANGELOG.md',

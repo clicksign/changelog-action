@@ -51,7 +51,7 @@ export default async function updateChangelog({
       encoding
     )
 
-    let response = await toolkit.repos.listCommits({
+    let response = await toolkit.rest.repos.listCommits({
       ...context.repo,
       sha: sha || context.sha,
       per_page: 1
@@ -60,7 +60,7 @@ export default async function updateChangelog({
     const latestCommitSha = response.data[0].sha
     const treeSha = response.data[0].commit.tree.sha
 
-    response = await toolkit.git.createTree({
+    response = await toolkit.rest.git.createTree({
       ...context.repo,
       tree: [
         {
