@@ -51,13 +51,36 @@ export default async function updateChangelog({
       encoding
     )
 
+    let response = await toolkit.repos.listCommits({
+      ...context.repo,
+      sha: sha || context.sha,
+      per_page: 1
+    })
+
+    const latestCommitSha = response.data[0].sha
+    const treeSha = response.data[0].commit.tree.sha
+
+    response = await toolkit.git.createTree({
+      ...context.repo,
+      tree: [
+        {
+          mode: '100644',
+          path: 'CHANGELOG.md',
+          content: 'udpate changelog'
+        }
+      ],
+      base_tree: treeSha
+    })
+    const newTreeSha = response.data.sha
+
     await toolkit.rest.git.createCommit({
       ...context.repo,
       author: {
         name: context.actor,
         email: ''
       },
-      tree: sha || context.sha,
+      tree: newTreeSha,
+      parents: [latestCommitSha],
       message: 'action: atualizando changelog'
     })
   } catch (e: any) {

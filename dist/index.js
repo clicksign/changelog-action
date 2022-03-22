@@ -377,10 +377,21 @@ function updateChangelog({ toolkit, context, sha, changelogFileName, newLog, new
                 quantityLogs
             });
             yield fsPromises.writeFile(path_1.default.resolve(changelogFileName), fullLogsWithLog, encoding);
+            let response = yield toolkit.repos.listCommits(Object.assign(Object.assign({}, context.repo), { sha: sha || context.sha, per_page: 1 }));
+            const latestCommitSha = response.data[0].sha;
+            const treeSha = response.data[0].commit.tree.sha;
+            response = yield toolkit.git.createTree(Object.assign(Object.assign({}, context.repo), { tree: [
+                    {
+                        mode: '100644',
+                        path: 'CHANGELOG.md',
+                        content: 'udpate changelog'
+                    }
+                ], base_tree: treeSha }));
+            const newTreeSha = response.data.sha;
             yield toolkit.rest.git.createCommit(Object.assign(Object.assign({}, context.repo), { author: {
                     name: context.actor,
-                    email: ""
-                }, tree: sha || context.sha, message: 'action: atualizando changelog' }));
+                    email: ''
+                }, tree: newTreeSha, parents: [latestCommitSha], message: 'action: atualizando changelog' }));
         }
         catch (e) {
             throw new Error(e.message);
