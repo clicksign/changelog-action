@@ -83,7 +83,7 @@ export default async function updateChangelog({
     await toolkit.rest.git.updateRef({
       ...context.repo,
       sha: latestCommitSha,
-      ref: `heads/main`,
+      ref: `refs/heads/main`,
       force: true
     })
   } catch (e: any) {
