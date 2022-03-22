@@ -55,7 +55,7 @@ export default async function updateChangelog({
       ...context.repo,
       author: context.actor,
       tree: sha || context.sha,
-      message: "action: atualizando changelog",
+      message: 'action: atualizando changelog'
     })
   } catch (e: any) {
     throw new Error(e.message)
