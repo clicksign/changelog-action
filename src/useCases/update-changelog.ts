@@ -73,11 +73,18 @@ export default async function updateChangelog({
     })
     const newTreeSha = response.data.sha
 
-    await toolkit.rest.git.createCommit({
+    response = await toolkit.rest.git.createCommit({
       ...context.repo,
       tree: newTreeSha,
       parents: [latestCommitSha],
       message: 'action: atualizando changelog'
+    })
+
+    await toolkit.rest.git.updateRef({
+      ...context.repo,
+      sha: latestCommitSha,
+      ref: `heads/main`,
+      force: true
     })
   } catch (e: any) {
     throw new Error(e.message)
