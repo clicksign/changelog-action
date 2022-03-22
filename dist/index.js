@@ -48,12 +48,19 @@ const update_changelog_1 = __importDefault(__nccwpck_require__(4846));
 const create_new_release_1 = __importDefault(__nccwpck_require__(8011));
 const quantity_logs_1 = __importDefault(__nccwpck_require__(4903));
 const get_old_logs_1 = __importDefault(__nccwpck_require__(4561));
+function githubToken() {
+    const token = process.env.GITHUB_TOKEN;
+    if (!token)
+        throw ReferenceError('No token defined in the environment variables');
+    return token;
+}
 function changelog({ changelogFileName, newLog, newComments, logFind, commentFind, encoding }) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             core.debug(`Name File: ${changelogFileName}`);
             core.debug(`Initial log find: ${logFind}`);
             core.debug(`New log add: ${newLog}`);
+            const toolkit = (0, github_1.getOctokit)(githubToken());
             const sha = core.getInput('sha');
             const oldLogs = yield (0, get_old_logs_1.default)({ changelogFileName, encoding });
             const quantityLogs = (0, quantity_logs_1.default)(oldLogs, logFind);
@@ -62,6 +69,9 @@ function changelog({ changelogFileName, newLog, newComments, logFind, commentFin
             core.debug(`Quantity logs in ${logsSplit[0]}: ${quantityLogs}`);
             // TODOL send quantity log, oldlogs, logSplit
             yield (0, update_changelog_1.default)({
+                toolkit,
+                context: github_1.context,
+                sha,
                 changelogFileName,
                 newLog,
                 newComments,
@@ -73,7 +83,7 @@ function changelog({ changelogFileName, newLog, newComments, logFind, commentFin
             });
             if (quantityLogs >= 4) {
                 yield (0, create_new_release_1.default)({
-                    getOctokit: github_1.getOctokit,
+                    toolkit,
                     context: github_1.context,
                     sha,
                     logsSplit
@@ -285,16 +295,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-function githubToken() {
-    const token = process.env.GITHUB_TOKEN;
-    if (!token)
-        throw ReferenceError('No token defined in the environment variables');
-    return token;
-}
-function createNewRelease({ getOctokit, context, sha, logsSplit }) {
+function createNewRelease({ toolkit, context, sha, logsSplit }) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const toolkit = getOctokit(githubToken());
             const ref = `refs/heads/release/v${logsSplit[0].split('v')[1]}`;
             yield toolkit.rest.git.createRef(Object.assign({ ref, sha: sha || context.sha }, context.repo));
         }
@@ -354,7 +357,7 @@ const fs_1 = __importDefault(__nccwpck_require__(7147));
 const mount_changelog_with_new_pr_1 = __importDefault(__nccwpck_require__(2179));
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const fsPromises = fs_1.default.promises;
-function updateChangelog({ changelogFileName, newLog, newComments, logFind, commentFind, encoding, oldLogs, quantityLogs }) {
+function updateChangelog({ toolkit, context, sha, changelogFileName, newLog, newComments, logFind, commentFind, encoding, oldLogs, quantityLogs }) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             if (newComments === null || newComments === void 0 ? void 0 : newComments.length) {
@@ -374,6 +377,7 @@ function updateChangelog({ changelogFileName, newLog, newComments, logFind, comm
                 quantityLogs
             });
             yield fsPromises.writeFile(path_1.default.resolve(changelogFileName), fullLogsWithLog, encoding);
+            yield toolkit.rest.git.createCommit(Object.assign(Object.assign({}, context.repo), { author: context.actor, tree: sha || context.sha, message: "action: atualizando changelog" }));
         }
         catch (e) {
             throw new Error(e.message);
