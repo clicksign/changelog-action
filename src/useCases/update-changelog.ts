@@ -53,6 +53,7 @@ export default async function updateChangelog({
 
     await toolkit.rest.git.createCommit({
       ...context.repo,
+      author: context.actor,
       tree: sha || context.sha,
       message: "action: atualizando changelog",
     })
