@@ -42,7 +42,6 @@ export default async function changelog({
     await updateChangelog({
       toolkit,
       context,
-      sha,
       changelogFileName,
       newLog,
       newComments,
