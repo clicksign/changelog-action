@@ -5,10 +5,7 @@ export default interface IUpdateChangelog {
   context: Context
   changelogFileName: string
   newLog: string
-  newComments?: string
   logFind: string
-  commentFind: string
-  encoding: any
   oldLogs: string
   quantityLogs: number
 }

@@ -1,4 +1,9 @@
 name: 'test lint and jest'
+
+concurrency:
+  group: test-lint-${{ github.ref_name }}
+  cancel-in-progress: true
+
 on:
   pull_request:
   push:

@@ -1,5 +1,9 @@
 name: Check dist/
 
+concurrency:
+  group: check-dist-${{ github.ref_name }}
+  cancel-in-progress: true
+
 on:
   push:
     branches:
