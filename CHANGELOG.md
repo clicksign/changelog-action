@@ -1,6 +1,12 @@
+# v1.3.0
+
+## Alterações
+---
+
 # v1.2.0
 
 ## Alterações
+- [FIX] Change token in pipeline changelog
 - build(deps-dev): bump @types/node from 17.0.21 to 17.0.22
 - build(deps-dev): bump eslint-plugin-jest from 26.1.1 to 26.1.2
 - build(deps-dev): bump @typescript-eslint/parser from 5.15.0 to 5.16.0
