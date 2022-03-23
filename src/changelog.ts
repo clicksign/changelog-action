@@ -17,9 +17,7 @@ function githubToken(): string {
 export default async function changelog({
   changelogFileName,
   newLog,
-  newComments,
   logFind,
-  commentFind,
   encoding
 }: IChangeLog): Promise<void> {
   try {
@@ -39,15 +37,12 @@ export default async function changelog({
     core.debug(`Quantity logs in ${logsSplit[0]}: ${quantityLogs}`)
 
     // TODOL send quantity log, oldlogs, logSplit
-    await updateChangelog({
+    const newSha = await updateChangelog({
       toolkit,
       context,
       changelogFileName,
       newLog,
-      newComments,
       logFind,
-      commentFind,
-      encoding,
       oldLogs,
       quantityLogs
     })
@@ -56,7 +51,7 @@ export default async function changelog({
       await createNewRelease({
         toolkit,
         context,
-        sha,
+        sha: newSha,
         logsSplit
       })
     }
