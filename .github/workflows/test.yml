@@ -1,4 +1,9 @@
 name: 'test lint and jest'
+
+concurrency:
+  group: test-lint-${{ github.ref_name }}
+  cancel-in-progress: true
+
 on:
   pull_request:
   push:
@@ -9,6 +14,8 @@ on:
 jobs:
   test-linter-jest:
     runs-on: ubuntu-latest
+    if: "!startsWith(github.event.head_commit.message, 'Merge') || github.event.pull_request.draft == false"
+
     steps:
       - name: Checkout Github
         uses: actions/checkout@v3

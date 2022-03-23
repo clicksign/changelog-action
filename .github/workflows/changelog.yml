@@ -26,14 +26,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-      - name: Commit Update Changelog
-        run: |
-          git config user.name "$(git log -n 1 --pretty=format:%an)"
-          git config user.email "$(git log -n 1 --pretty=format:%ae)"
-          git add CHANGELOG.md
-          git commit -m 'action: update changelog'
-          echo "${GITHUB_REF#refs/heads/}"
-
       - name: Push Update Changelog
         uses: ad-m/github-push-action@master
         with:
