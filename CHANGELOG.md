@@ -1,6 +1,7 @@
 # v1.2.0
 
 ## Alterações
+- build(deps-dev): bump @typescript-eslint/parser from 5.15.0 to 5.16.0
 - build(deps-dev): bump eslint-plugin-github from 4.3.5 to 4.3.6
 ---
 
