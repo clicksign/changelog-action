@@ -5,9 +5,7 @@ async function run(): Promise<void> {
   try {
     const changelogFileName = core.getInput('changelog_file_name')
     const newLog = core.getInput('changelog_new_log')
-    const newComments = core.getInput('changelog_new_comments')
     const logFind = core.getInput('log_find')
-    const commentFind = core.getInput('comment_find')
     const encoding = core.getInput('encoding')
 
     core.debug(`Start update changelog ${new Date().toTimeString()}`)
@@ -15,9 +13,7 @@ async function run(): Promise<void> {
     await changelog({
       changelogFileName,
       newLog,
-      newComments,
       logFind,
-      commentFind,
       encoding
     })
 
