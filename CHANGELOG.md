@@ -1,6 +1,7 @@
 # v1.2.0
 
 ## Alterações
+- build(deps-dev): bump eslint-plugin-github from 4.3.5 to 4.3.6
 ---
 
 # v1.1.0
