@@ -48,12 +48,19 @@ const update_changelog_1 = __importDefault(__nccwpck_require__(4846));
 const create_new_release_1 = __importDefault(__nccwpck_require__(8011));
 const quantity_logs_1 = __importDefault(__nccwpck_require__(4903));
 const get_old_logs_1 = __importDefault(__nccwpck_require__(4561));
-function changelog({ changelogFileName, newLog, newComments, logFind, commentFind, encoding }) {
+function githubToken() {
+    const token = process.env.GITHUB_TOKEN;
+    if (!token)
+        throw ReferenceError('No token defined in the environment variables');
+    return token;
+}
+function changelog({ changelogFileName, newLog, logFind, encoding }) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             core.debug(`Name File: ${changelogFileName}`);
             core.debug(`Initial log find: ${logFind}`);
             core.debug(`New log add: ${newLog}`);
+            const toolkit = (0, github_1.getOctokit)(githubToken());
             const sha = core.getInput('sha');
             const oldLogs = yield (0, get_old_logs_1.default)({ changelogFileName, encoding });
             const quantityLogs = (0, quantity_logs_1.default)(oldLogs, logFind);
@@ -61,21 +68,20 @@ function changelog({ changelogFileName, newLog, newComments, logFind, commentFin
             core.debug(`Current release: ${logsSplit[0]}`);
             core.debug(`Quantity logs in ${logsSplit[0]}: ${quantityLogs}`);
             // TODOL send quantity log, oldlogs, logSplit
-            yield (0, update_changelog_1.default)({
+            const newSha = yield (0, update_changelog_1.default)({
+                toolkit,
+                context: github_1.context,
                 changelogFileName,
                 newLog,
-                newComments,
                 logFind,
-                commentFind,
-                encoding,
                 oldLogs,
                 quantityLogs
             });
             if (quantityLogs >= 4) {
                 yield (0, create_new_release_1.default)({
-                    getOctokit: github_1.getOctokit,
+                    toolkit,
                     context: github_1.context,
-                    sha,
+                    sha: newSha,
                     logsSplit
                 });
             }
@@ -243,17 +249,13 @@ function run() {
         try {
             const changelogFileName = core.getInput('changelog_file_name');
             const newLog = core.getInput('changelog_new_log');
-            const newComments = core.getInput('changelog_new_comments');
             const logFind = core.getInput('log_find');
-            const commentFind = core.getInput('comment_find');
             const encoding = core.getInput('encoding');
             core.debug(`Start update changelog ${new Date().toTimeString()}`);
             yield (0, changelog_1.default)({
                 changelogFileName,
                 newLog,
-                newComments,
                 logFind,
-                commentFind,
                 encoding
             });
             core.debug(`Finished update changelog${new Date().toTimeString()}`);
@@ -285,16 +287,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-function githubToken() {
-    const token = process.env.GITHUB_TOKEN;
-    if (!token)
-        throw ReferenceError('No token defined in the environment variables');
-    return token;
-}
-function createNewRelease({ getOctokit, context, sha, logsSplit }) {
+function createNewRelease({ toolkit, context, sha, logsSplit }) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const toolkit = getOctokit(githubToken());
             const ref = `refs/heads/release/v${logsSplit[0].split('v')[1]}`;
             yield toolkit.rest.git.createRef(Object.assign({ ref, sha: sha || context.sha }, context.repo));
         }
@@ -350,30 +345,32 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
-const fs_1 = __importDefault(__nccwpck_require__(7147));
 const mount_changelog_with_new_pr_1 = __importDefault(__nccwpck_require__(2179));
-const path_1 = __importDefault(__nccwpck_require__(1017));
-const fsPromises = fs_1.default.promises;
-function updateChangelog({ changelogFileName, newLog, newComments, logFind, commentFind, encoding, oldLogs, quantityLogs }) {
+function updateChangelog({ toolkit, context, changelogFileName, newLog, logFind, oldLogs, quantityLogs }) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            if (newComments === null || newComments === void 0 ? void 0 : newComments.length) {
-                const fullLogsWithComment = (0, mount_changelog_with_new_pr_1.default)({
-                    newLog: newComments,
-                    oldLogs,
-                    logFind: commentFind,
-                    quantityLogs
-                });
-                core.debug(`New comments add ${newComments}`);
-                yield fsPromises.writeFile(path_1.default.resolve(changelogFileName), fullLogsWithComment, encoding);
-            }
             const fullLogsWithLog = (0, mount_changelog_with_new_pr_1.default)({
                 newLog,
                 oldLogs,
                 logFind,
                 quantityLogs
             });
-            yield fsPromises.writeFile(path_1.default.resolve(changelogFileName), fullLogsWithLog, encoding);
+            const file = [
+                {
+                    mode: '100644',
+                    path: changelogFileName,
+                    content: fullLogsWithLog
+                }
+            ];
+            const repoMain = 'heads/main';
+            const commits = yield toolkit.rest.repos.listCommits(Object.assign({}, context.repo));
+            const latestCommitSHA = commits.data[0].sha;
+            core.debug(`Last commit sha: ${latestCommitSHA}`);
+            const { data: { sha: newTreeSha } } = yield toolkit.rest.git.createTree(Object.assign(Object.assign({}, context.repo), { tree: file, base_tree: latestCommitSHA }));
+            const { data: { sha: newCommitSHA } } = yield toolkit.rest.git.createCommit(Object.assign(Object.assign({}, context.repo), { tree: newTreeSha, parents: [latestCommitSHA], message: 'action: atualizando changelog' }));
+            core.debug(`New commit sha: ${newCommitSHA}`);
+            yield toolkit.rest.git.updateRef(Object.assign(Object.assign({}, context.repo), { sha: newCommitSHA, ref: repoMain, force: true }));
+            return newCommitSHA;
         }
         catch (e) {
             throw new Error(e.message);
