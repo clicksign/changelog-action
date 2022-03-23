@@ -363,10 +363,7 @@ function updateChangelog({ toolkit, context, changelogFileName, newLog, logFind,
                 }
             ];
             const repoMain = 'heads/main';
-            const commits = yield toolkit.rest.repos.listCommits({
-                owner: context.repo.owner,
-                repo: repoMain
-            });
+            const commits = yield toolkit.rest.repos.listCommits(Object.assign({}, context.repo));
             const latestCommitSHA = commits.data[0].sha;
             core.debug(`Last commit sha: ${latestCommitSHA}`);
             const { data: { sha: newTreeSha } } = yield toolkit.rest.git.createTree(Object.assign(Object.assign({}, context.repo), { tree: file, base_tree: latestCommitSHA }));

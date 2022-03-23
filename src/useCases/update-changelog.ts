@@ -31,8 +31,7 @@ export default async function updateChangelog({
     const repoMain = 'heads/main'
 
     const commits = await toolkit.rest.repos.listCommits({
-      owner: context.repo.owner,
-      repo: repoMain
+      ...context.repo
     })
 
     const latestCommitSHA = commits.data[0].sha
