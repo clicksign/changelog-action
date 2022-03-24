@@ -25,9 +25,3 @@ jobs:
           log_find: '## Alterações'
         env:
           GITHUB_TOKEN: ${{secrets.TOKEN}}
-
-      - name: Push Update Changelog
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
