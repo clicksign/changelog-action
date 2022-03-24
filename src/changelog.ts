@@ -18,7 +18,8 @@ export default async function changelog({
   changelogFileName,
   newLog,
   logFind,
-  encoding
+  encoding,
+  repoMain
 }: IChangeLog): Promise<void> {
   try {
     core.debug(`Name File: ${changelogFileName}`)
@@ -44,7 +45,8 @@ export default async function changelog({
       newLog,
       logFind,
       oldLogs,
-      quantityLogs
+      quantityLogs,
+      repoMain
     })
 
     if (quantityLogs >= 4) {

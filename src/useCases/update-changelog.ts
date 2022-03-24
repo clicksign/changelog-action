@@ -10,7 +10,8 @@ export default async function updateChangelog({
   newLog,
   logFind,
   oldLogs,
-  quantityLogs
+  quantityLogs,
+  repoMain
 }: IUpdateChangelog): Promise<any> {
   try {
     const fullLogsWithLog = mountChangelogWithNewPR({
@@ -27,8 +28,6 @@ export default async function updateChangelog({
         content: fullLogsWithLog
       }
     ]
-
-    const repoMain = 'heads/main'
 
     const commits = await toolkit.rest.repos.listCommits({
       ...context.repo

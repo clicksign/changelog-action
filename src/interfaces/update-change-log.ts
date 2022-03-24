@@ -8,4 +8,5 @@ export default interface IUpdateChangelog {
   logFind: string
   oldLogs: string
   quantityLogs: number
+  repoMain: string
 }
