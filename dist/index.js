@@ -54,7 +54,7 @@ function githubToken() {
         throw ReferenceError('No token defined in the environment variables');
     return token;
 }
-function changelog({ changelogFileName, newLog, logFind, encoding }) {
+function changelog({ changelogFileName, newLog, logFind, encoding, repoMain }) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             core.debug(`Name File: ${changelogFileName}`);
@@ -75,7 +75,8 @@ function changelog({ changelogFileName, newLog, logFind, encoding }) {
                 newLog,
                 logFind,
                 oldLogs,
-                quantityLogs
+                quantityLogs,
+                repoMain
             });
             if (quantityLogs >= 4) {
                 yield (0, create_new_release_1.default)({
@@ -251,12 +252,14 @@ function run() {
             const newLog = core.getInput('changelog_new_log');
             const logFind = core.getInput('log_find');
             const encoding = core.getInput('encoding');
+            const repoMain = core.getInput('repo_main');
             core.debug(`Start update changelog ${new Date().toTimeString()}`);
             yield (0, changelog_1.default)({
                 changelogFileName,
                 newLog,
                 logFind,
-                encoding
+                encoding,
+                repoMain
             });
             core.debug(`Finished update changelog${new Date().toTimeString()}`);
             core.setOutput('time', new Date().toTimeString());
@@ -346,7 +349,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const mount_changelog_with_new_pr_1 = __importDefault(__nccwpck_require__(2179));
-function updateChangelog({ toolkit, context, changelogFileName, newLog, logFind, oldLogs, quantityLogs }) {
+function updateChangelog({ toolkit, context, changelogFileName, newLog, logFind, oldLogs, quantityLogs, repoMain }) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const fullLogsWithLog = (0, mount_changelog_with_new_pr_1.default)({
@@ -362,7 +365,6 @@ function updateChangelog({ toolkit, context, changelogFileName, newLog, logFind,
                     content: fullLogsWithLog
                 }
             ];
-            const repoMain = 'heads/main';
             const commits = yield toolkit.rest.repos.listCommits(Object.assign({}, context.repo));
             const latestCommitSHA = commits.data[0].sha;
             core.debug(`Last commit sha: ${latestCommitSHA}`);
