@@ -1,34 +1,14 @@
 import * as core from '@actions/core'
 
 import {IUpdateChangelog} from '../interfaces'
-import mountChangelogWithNewPR from '../libs/mount-changelog-with-new-pr'
 
 export default async function updateChangelog({
   toolkit,
   context,
-  changelogFileName,
-  newLog,
-  logFind,
-  oldLogs,
-  quantityLogs,
+  file,
   repoMain
 }: IUpdateChangelog): Promise<any> {
   try {
-    const fullLogsWithLog = mountChangelogWithNewPR({
-      newLog,
-      oldLogs,
-      logFind,
-      quantityLogs
-    })
-
-    const file = [
-      {
-        mode: '100644',
-        path: changelogFileName,
-        content: fullLogsWithLog
-      }
-    ]
-
     const commits = await toolkit.rest.repos.listCommits({
       ...context.repo
     })
@@ -60,8 +40,6 @@ export default async function updateChangelog({
       ref: repoMain,
       force: true
     })
-
-    return newCommitSHA
   } catch (e: any) {
     throw new Error(e.message)
   }
