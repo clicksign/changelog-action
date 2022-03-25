@@ -7,6 +7,7 @@ async function run(): Promise<void> {
     const newLog = core.getInput('changelog_new_log')
     const logFind = core.getInput('log_find')
     const encoding = core.getInput('encoding')
+    const repoMain = core.getInput('repo_main')
 
     core.debug(`Start update changelog ${new Date().toTimeString()}`)
 
@@ -14,7 +15,8 @@ async function run(): Promise<void> {
       changelogFileName,
       newLog,
       logFind,
-      encoding
+      encoding,
+      repoMain
     })
 
     core.debug(`Finished update changelog${new Date().toTimeString()}`)

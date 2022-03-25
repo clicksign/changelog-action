@@ -22,6 +22,10 @@ inputs:
     required: false
     description: 'add encoded read file'
     default: 'utf-8'
+  repo_main:
+    required: false
+    description: 'Name main repository'
+    default: 'heads/main'
 runs:
   using: 'node12'
   main: 'dist/index.js'
