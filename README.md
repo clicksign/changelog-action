@@ -80,18 +80,6 @@ jobs:
         with:
           changelog_new_log: ${{ steps.get_message.outputs.MESSAGE }}
           log_find: '## Alterações'
-
-      - name: Commit New Changelog
-        run: |
-          git config user.name "$(git log -n 1 --pretty=format:%an)"
-          git config user.email "$(git log -n 1 --pretty=format:%ae)"
-          git add CHANGELOG.md
-          git commit -m 'action: update changelog'
-          echo "${GITHUB_REF#refs/heads/}"
-
-      - name: Push New Changelog
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+        env:
+          GITHUB_TOKEN: ${{secrets.PERSONAL_TOKEN}}
 ```

@@ -1,6 +1,7 @@
 # v1.3.0
 
 ## Alterações
+- [REFACTOR] Remove push in pipeline changelog
 ---
 
 # v1.2.0
