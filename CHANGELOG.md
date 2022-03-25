@@ -1,6 +1,7 @@
 # v1.3.0
 
 ## Alterações
+- [REFACTOR] Update readme
 - [REFACTOR] Remove push in pipeline changelog
 ---
 
