@@ -1,7 +1,13 @@
+# v1.4.0
+
+## Alterações
+---
+
 # v1.3.0
 
 ## Alterações
-- build(deps-dev): bump @types/node from 17.0.22 to 17.0.23
+- build(deps): bump minimist from 1.2.5 to 1.2.6
+- build(deps-dev): bump prettier from 2.6.0 to 2.6.1
 - build(deps-dev): bump typescript from 4.6.2 to 4.6.3
 - [REFACTOR] Update readme
 - [REFACTOR] Remove push in pipeline changelog
