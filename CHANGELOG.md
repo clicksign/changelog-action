@@ -1,6 +1,7 @@
 # v1.4.0
 
 ## Alterações
+- build(deps-dev): bump eslint-plugin-jest from 26.1.2 to 26.1.3
 ---
 
 # v1.3.0
