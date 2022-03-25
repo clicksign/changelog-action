@@ -1,6 +1,7 @@
 # v1.3.0
 
 ## Alterações
+- build(deps-dev): bump typescript from 4.6.2 to 4.6.3
 - [REFACTOR] Update readme
 - [REFACTOR] Remove push in pipeline changelog
 ---
