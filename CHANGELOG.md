@@ -1,6 +1,7 @@
 # v1.4.0
 
 ## Alterações
+- build(deps-dev): bump ts-jest from 27.1.3 to 27.1.4
 - build(deps-dev): bump eslint from 8.11.0 to 8.12.0
 - build(deps-dev): bump eslint-plugin-jest from 26.1.2 to 26.1.3
 ---
