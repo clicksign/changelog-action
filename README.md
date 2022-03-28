@@ -58,6 +58,7 @@ The action.yml defines news inputs and output for action.
 | log_find                     | true          | null         | add the key where the log below will be added |
 | comment_find                 | false         | null         | add the key where the log below will be added |
 | encoding                     | false         | utf-8        | add encoded read file                         |
+| repo_main                    | false         | heads/main   | Name main repository                          |
 
 
 ## Example
