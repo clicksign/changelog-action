@@ -29,7 +29,7 @@ export default function mountPayload({
         "block_id": "section567",
         "text": {
           "type": "mrkdwn",
-          "text": ":new: Aberta a branch \`${newRelease}\` \\n\\n :rocket: Atualizada a main para ser candidata à \`${mainRelease}\` \\n\\n :warning: Atualizem os changelog de seus branches"
+          "text": ":new: Aberta a branch \`${newRelease}\` \\n\\n :rocket: Atualizada a main para ser candidata à \`${mainRelease}\`"
         }
       },
       {
