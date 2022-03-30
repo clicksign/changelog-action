@@ -162,7 +162,7 @@ ${logFind}\n- ${newLog}
   })
 
   it('should mount payload', async () => {
-    const time = (new Date()).toTimeString();
+    const time = new Date().toTimeString()
     const payload = mountPayload({
       newRelease: 'release/v1.0.0',
       mainRelease: 'release/v1.1.0',
@@ -211,6 +211,16 @@ ${logFind}\n- ${newLog}
       ]
     }`
 
-    expect(payload.replace(/(\r\n|\n|\r)/gm, '').split(' ').join('')).toBe(payloadFake.replace(/(\r\n|\n|\r)/gm, '').split(' ').join(''))
+    expect(
+      payload
+        .replace(/(\r\n|\n|\r)/gm, '')
+        .split(' ')
+        .join('')
+    ).toBe(
+      payloadFake
+        .replace(/(\r\n|\n|\r)/gm, '')
+        .split(' ')
+        .join('')
+    )
   })
 })
