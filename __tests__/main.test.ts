@@ -193,7 +193,7 @@ ${logFind}\n- ${newLog}
           "block_id": "section567",
           "text": {
             "type": "mrkdwn",
-            "text": ":new: Aberta a branch \`release/v1.0.0\` \\n\\n :rocket: Atualizada a main para ser candidata à \`release/v1.1.0\` \\n\\n :warning: Atualizem os changelog de seus branches"
+            "text": ":new: Aberta a branch \`release/v1.0.0\` \\n\\n :rocket: Atualizada a main para ser candidata à \`release/v1.1.0\`"
           }
         },
         {
