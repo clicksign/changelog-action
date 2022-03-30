@@ -26,6 +26,9 @@ inputs:
     required: false
     description: 'Name main repository'
     default: 'heads/main'
+  payload:
+    required: false
+    description: 'Paylod send slack message'
 runs:
   using: 'node12'
   main: 'dist/index.js'

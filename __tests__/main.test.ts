@@ -6,6 +6,7 @@ import getOldlogs from '../src/libs/get-old-logs'
 import countLogsLastInRelease from '../src/libs/quantity-logs'
 import newVersion from '../src/libs/version'
 import mountChangelogWithNewPR from '../src/libs/mount-changelog-with-new-pr'
+import mountPayload from '../src/libs/mount-payload'
 
 const getOldLogs = async (filePath: string) => {
   const changelogFileName = path.resolve(filePath)
@@ -158,5 +159,58 @@ ${logFind}\n- ${newLog}
     expect(quantityLogs3).toBe(3)
     expect(quantityLogs4).toBe(4)
     expect(quantityLogs5).toBe(0)
+  })
+
+  it('should mount payload', async () => {
+    const time = (new Date()).toTimeString();
+    const payload = mountPayload({
+      newRelease: 'release/v1.0.0',
+      mainRelease: 'release/v1.1.0',
+      time
+    })
+
+    const payloadFake = `{
+      "text": "NOVA RELEASE :new::new::new:.",
+      "blocks": [
+        {
+          "type": "context",
+          "elements" : [
+            {
+              "type": "mrkdwn",
+              "text": "*NOVA RELEASE*"
+            },
+            {
+              "type": "mrkdwn",
+              "text": "@channel"
+            }
+          ]
+        },
+        {
+          "type": "divider"
+        },
+        {
+          "type": "section",
+          "block_id": "section567",
+          "text": {
+            "type": "mrkdwn",
+            "text": ":new: Aberta a branch \`release/v1.0.0\` \\n\\n :rocket: Atualizada a main para ser candidata à \`release/v1.1.0\` \\n\\n :warning: Atualizem os changelog de seus branches"
+          }
+        },
+        {
+          "type": "context",
+          "elements" : [
+            {
+              "type": "mrkdwn",
+              "text": "Release release/v1.0.0 criada em ${time}"
+            }
+          ]
+        },
+        {
+          "type": "divider"
+        }
+      ]
+    }`
+
+    expect(payload.replace(/(\r\n|\n|\r)/gm, '').split(' ').join('')).toBe(payloadFake.replace(/(\r\n|\n|\r)/gm, '').split(' ').join(''))
   })
 })
