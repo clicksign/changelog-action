@@ -456,7 +456,7 @@ function slackSend(payloadInject, release) {
                 });
             }
             if (webhookUrl === undefined) {
-                throw new Error('Need to provide at least one webhookUrl');
+                core.debug('Need to provide at least one webhookUrl');
             }
             if (typeof webhookUrl !== 'undefined' && webhookUrl.length > 0) {
                 try {

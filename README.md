@@ -59,7 +59,7 @@ The action.yml defines news inputs and output for action.
 | comment_find                 | false         | null         | add the key where the log below will be added |
 | encoding                     | false         | utf-8        | add encoded read file                         |
 | repo_main                    | false         | heads/main   | Name main repository                          |
-| payload                      | false         | heads/main   | Paylod send slack message                     |
+| payload                      | false         | null         | Paylod send slack message                     |
 
 
 ## Example
@@ -84,4 +84,5 @@ jobs:
           log_find: '## Alterações'
         env:
           GITHUB_TOKEN: ${{secrets.PERSONAL_TOKEN}}
+          SLACK_WEBHOOK_URL: ${{secrets.SLACK_WEBHOOK_URL}}
 ```
