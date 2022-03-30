@@ -4,9 +4,10 @@ import changelog from './changelog'
 async function run(): Promise<void> {
   try {
     const changelogFileName = core.getInput('changelog_file_name')
-    const newLog = core.getInput('changelog_new_log')
-    const logFind = core.getInput('log_find')
     const encoding = core.getInput('encoding')
+    const logFind = core.getInput('log_find')
+    const newLog = core.getInput('changelog_new_log')
+    const payloadInjection = core.getInput('payload')
     const repoMain = core.getInput('repo_main')
 
     core.debug(`Start update changelog ${new Date().toTimeString()}`)
@@ -16,7 +17,8 @@ async function run(): Promise<void> {
       newLog,
       logFind,
       encoding,
-      repoMain
+      repoMain,
+      payloadInjection
     })
 
     core.debug(`Finished update changelog${new Date().toTimeString()}`)

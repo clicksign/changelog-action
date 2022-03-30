@@ -7,7 +7,7 @@ export default async function updateChangelog({
   context,
   file,
   repoMain
-}: IUpdateChangelog): Promise<any> {
+}: IUpdateChangelog): Promise<void> {
   try {
     const commits = await toolkit.rest.repos.listCommits({
       ...context.repo

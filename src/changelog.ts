@@ -7,6 +7,8 @@ import createNewRelease from './useCases/create-new-release'
 import countLogsLastInRelease from './libs/quantity-logs'
 import getOldlogs from './libs/get-old-logs'
 import mountChangelogWithNewPR from './libs/mount-changelog-with-new-pr'
+import slackSend from './useCases/slack-send'
+import newVersion from './libs/version'
 
 function githubToken(): string {
   const token = process.env.GITHUB_TOKEN
@@ -20,7 +22,8 @@ export default async function changelog({
   newLog,
   logFind,
   encoding,
-  repoMain
+  repoMain,
+  payloadInjection
 }: IChangeLog): Promise<void> {
   try {
     core.debug(`Name File: ${changelogFileName}`)
@@ -53,7 +56,7 @@ export default async function changelog({
       }
     ]
 
-    const newSha = await updateChangelog({
+    await updateChangelog({
       toolkit,
       context,
       file: fileMain,
@@ -83,6 +86,10 @@ export default async function changelog({
         file: fileRelease,
         logsSplit
       })
+
+      const release = newVersion(logsSplit[0])
+
+      await slackSend(payloadInjection, release)
     }
   } catch (e: any) {
     throw new Error(e.message)

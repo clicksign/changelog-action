@@ -4,4 +4,5 @@ export default interface IChangelog {
   logFind: string
   encoding: any
   repoMain: string
+  payloadInjection: string
 }
