@@ -1,6 +1,7 @@
 # v1.5.0
 
 ## Alterações
+- feature: add max logs in codition
 ---
 
 # v1.4.0
