@@ -3,4 +3,5 @@ export default interface IMountLog {
   oldLogs: string
   logFind: string
   quantityLogs: number
+  maxLogs: number
 }

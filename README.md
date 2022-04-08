@@ -60,6 +60,7 @@ The action.yml defines news inputs and output for action.
 | encoding                     | false         | utf-8        | add encoded read file                         |
 | repo_main                    | false         | heads/main   | Name main repository                          |
 | payload                      | false         | null         | Paylod send slack message                     |
+| max_logs                     | false         | 5            | Quantity max logs in changlog                 |
 
 
 ## Example

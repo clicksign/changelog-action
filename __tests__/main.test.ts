@@ -33,12 +33,14 @@ describe('Cangelog Action', () => {
     const oldLogs = await getOldLogs('__tests__/test.md')
     const logFind = 'file read test'
     const quantityLogs = countLogsLastInRelease(oldLogs, logFind)
+    const maxLogs = 4
 
     const finalLog = mountChangelogWithNewPR({
       newLog,
       oldLogs,
       logFind,
-      quantityLogs
+      quantityLogs,
+      maxLogs
     })
     expect(`${oldLogs}\n- ${newLog}`).toBe(finalLog)
   })
@@ -56,6 +58,7 @@ describe('Cangelog Action', () => {
     const oldLogs = await getOldLogs('__tests__/test2.md')
     const logFind = '## Alterações'
     const quantityLogs = countLogsLastInRelease(oldLogs, logFind)
+    const maxLogs = 4
 
     const log = `# v1.0.0
 
@@ -67,7 +70,8 @@ ${logFind}\n- ${newLog}
       newLog,
       oldLogs,
       logFind,
-      quantityLogs
+      quantityLogs,
+      maxLogs
     })
     expect(log).toBe(finalLog)
   })
@@ -77,6 +81,7 @@ ${logFind}\n- ${newLog}
     const oldLogs = await getOldLogs('__tests__/test3.md')
     const logFind = '## Alterações'
     const quantityLogs = countLogsLastInRelease(oldLogs, logFind)
+    const maxLogs = 4
 
     const log = `# v1.0.0
 
@@ -91,7 +96,8 @@ ${logFind}\n- ${newLog}
       newLog,
       oldLogs,
       logFind,
-      quantityLogs
+      quantityLogs,
+      maxLogs
     })
     expect(log).toBe(finalLog)
   })
@@ -101,6 +107,7 @@ ${logFind}\n- ${newLog}
     const oldLogs = await getOldLogs('__tests__/test4.md')
     const logFind = '## Alterações'
     const quantityLogs = countLogsLastInRelease(oldLogs, logFind)
+    const maxLogs = 4
 
     const log = `# v1.2.0
 
@@ -132,7 +139,8 @@ ${logFind}\n- ${newLog}
       newLog,
       oldLogs,
       logFind,
-      quantityLogs
+      quantityLogs,
+      maxLogs
     })
     expect(log).toBe(finalLog)
   })

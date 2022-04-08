@@ -6,7 +6,8 @@ export default function mountChangelogWithNewPR({
   newLog,
   oldLogs,
   logFind,
-  quantityLogs
+  quantityLogs,
+  maxLogs
 }: IMountLog): string {
   const logsSplit = oldLogs.split('\n')
 
@@ -22,7 +23,7 @@ export default function mountChangelogWithNewPR({
 
   logsSplit[firstIndexWord] = `${logFind}\n- ${newLog}`
 
-  if (quantityLogs >= 4) {
+  if (quantityLogs >= maxLogs) {
     const releaseNewVersion = newVersion(logsSplit[0])
     const changelogWithNewVersion = `# v${releaseNewVersion}\n\n${logFind}\n---\n\n${logsSplit[0]}`
     logsSplit[0] = changelogWithNewVersion

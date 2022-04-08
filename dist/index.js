@@ -57,7 +57,7 @@ function githubToken() {
         throw ReferenceError('No token defined in the environment variables');
     return token;
 }
-function changelog({ changelogFileName, newLog, logFind, encoding, repoMain, payloadInjection }) {
+function changelog({ changelogFileName, newLog, logFind, encoding, repoMain, payloadInjection, maxLogs }) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             core.debug(`Name File: ${changelogFileName}`);
@@ -73,7 +73,8 @@ function changelog({ changelogFileName, newLog, logFind, encoding, repoMain, pay
                 newLog,
                 oldLogs,
                 logFind,
-                quantityLogs
+                quantityLogs,
+                maxLogs
             });
             const modeID = '100644';
             const fileMain = [
@@ -90,12 +91,13 @@ function changelog({ changelogFileName, newLog, logFind, encoding, repoMain, pay
                 repoMain
             });
             // New Release
-            if (quantityLogs >= 4) {
+            if (quantityLogs >= maxLogs) {
                 const fullLogsNewRelase = (0, mount_changelog_with_new_pr_1.default)({
                     newLog,
                     oldLogs,
                     logFind,
-                    quantityLogs: 0
+                    quantityLogs: 0,
+                    maxLogs
                 });
                 const fileRelease = [
                     {
@@ -171,7 +173,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const version_1 = __importDefault(__nccwpck_require__(3764));
-function mountChangelogWithNewPR({ newLog, oldLogs, logFind, quantityLogs }) {
+function mountChangelogWithNewPR({ newLog, oldLogs, logFind, quantityLogs, maxLogs }) {
     const logsSplit = oldLogs.split('\n');
     if (logsSplit.length === 1) {
         return `${logFind}\n- ${newLog}`;
@@ -182,7 +184,7 @@ function mountChangelogWithNewPR({ newLog, oldLogs, logFind, quantityLogs }) {
         }
     });
     logsSplit[firstIndexWord] = `${logFind}\n- ${newLog}`;
-    if (quantityLogs >= 4) {
+    if (quantityLogs >= maxLogs) {
         const releaseNewVersion = (0, version_1.default)(logsSplit[0]);
         const changelogWithNewVersion = `# v${releaseNewVersion}\n\n${logFind}\n---\n\n${logsSplit[0]}`;
         logsSplit[0] = changelogWithNewVersion;
@@ -335,6 +337,7 @@ function run() {
             const newLog = core.getInput('changelog_new_log');
             const payloadInjection = core.getInput('payload');
             const repoMain = core.getInput('repo_main');
+            const maxLogs = core.getInput('max_logs');
             core.debug(`Start update changelog ${new Date().toTimeString()}`);
             yield (0, changelog_1.default)({
                 changelogFileName,
@@ -342,7 +345,8 @@ function run() {
                 logFind,
                 encoding,
                 repoMain,
-                payloadInjection
+                payloadInjection,
+                maxLogs: parseInt(maxLogs)
             });
             core.debug(`Finished update changelog${new Date().toTimeString()}`);
             core.setOutput('time', new Date().toTimeString());
