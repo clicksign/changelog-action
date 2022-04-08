@@ -29,6 +29,10 @@ inputs:
   payload:
     required: false
     description: 'Paylod send slack message'
+  max_logs:
+    required: false
+    description: 'add encoded read file'
+    default: '5'
 runs:
   using: 'node12'
   main: 'dist/index.js'

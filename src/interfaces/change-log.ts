@@ -5,4 +5,5 @@ export default interface IChangelog {
   encoding: any
   repoMain: string
   payloadInjection: string
+  maxLogs: number
 }

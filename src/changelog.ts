@@ -23,7 +23,8 @@ export default async function changelog({
   logFind,
   encoding,
   repoMain,
-  payloadInjection
+  payloadInjection,
+  maxLogs
 }: IChangeLog): Promise<void> {
   try {
     core.debug(`Name File: ${changelogFileName}`)
@@ -43,7 +44,8 @@ export default async function changelog({
       newLog,
       oldLogs,
       logFind,
-      quantityLogs
+      quantityLogs,
+      maxLogs
     })
 
     const modeID = '100644'
@@ -64,12 +66,13 @@ export default async function changelog({
     })
 
     // New Release
-    if (quantityLogs >= 4) {
+    if (quantityLogs >= maxLogs) {
       const fullLogsNewRelase = mountChangelogWithNewPR({
         newLog,
         oldLogs,
         logFind,
-        quantityLogs: 0
+        quantityLogs: 0,
+        maxLogs
       })
 
       const fileRelease = [
