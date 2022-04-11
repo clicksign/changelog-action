@@ -336,9 +336,7 @@ function run() {
             const logFind = core.getInput('log_find');
             const newLog = core.getInput('changelog_new_log');
             const payloadInjection = core.getInput('payload');
-            const repoMain = core.getInput('repo_main').includes('release')
-                ? `refs/${core.getInput('repo_main')}`
-                : core.getInput('repo_main');
+            const repoMain = core.getInput('repo_main');
             const maxLogs = core.getInput('max_logs');
             core.debug(`Start update changelog ${new Date().toTimeString()}`);
             yield (0, changelog_1.default)({
@@ -532,6 +530,7 @@ function updateChangelog({ toolkit, context, file, repoMain }) {
             const { data: { sha: newTreeSha } } = yield toolkit.rest.git.createTree(Object.assign(Object.assign({}, context.repo), { tree: file, base_tree: latestCommitSHA }));
             const { data: { sha: newCommitSHA } } = yield toolkit.rest.git.createCommit(Object.assign(Object.assign({}, context.repo), { tree: newTreeSha, parents: [latestCommitSHA], message: 'action: atualizando changelog' }));
             core.debug(`New commit sha: ${newCommitSHA}`);
+            core.debug(`Repository name: ${repoMain}`);
             yield toolkit.rest.git.updateRef(Object.assign(Object.assign({}, context.repo), { sha: newCommitSHA, ref: repoMain, force: true }));
         }
         catch (e) {
