@@ -531,6 +531,7 @@ function updateChangelog({ toolkit, context, file, repoMain }) {
             const { data: { sha: newCommitSHA } } = yield toolkit.rest.git.createCommit(Object.assign(Object.assign({}, context.repo), { tree: newTreeSha, parents: [latestCommitSHA], message: 'action: atualizando changelog' }));
             core.debug(`New commit sha: ${newCommitSHA}`);
             core.debug(`Repository name: ${repoMain}`);
+            core.debug(`Owner: ${context.repo.owner} Repo: ${context.repo.repo}`);
             yield toolkit.rest.git.updateRef(Object.assign(Object.assign({}, context.repo), { sha: newCommitSHA, ref: repoMain, force: true }));
         }
         catch (e) {
