@@ -9,19 +9,19 @@ export default async function updateChangelog({
   repoMain
 }: IUpdateChangelog): Promise<void> {
   try {
-    const commits = await toolkit.rest.repos.listCommits({
-      ...context.repo
-    })
+    // const commits = await toolkit.rest.repos.listCommits({
+    //   ...context.repo
+    // })
 
-    const latestCommitSHA = commits.data[0].sha
-    core.debug(`Last commit sha: ${latestCommitSHA}`)
+    // const latestCommitSHA = commits.data[0].sha
+    // core.debug(`Last commit sha: ${latestCommitSHA}`)
 
     const {
       data: {sha: newTreeSha}
     } = await toolkit.rest.git.createTree({
       ...context.repo,
-      tree: file,
-      base_tree: latestCommitSHA
+      tree: file
+      // base_tree: latestCommitSHA
     })
 
     const {
@@ -29,7 +29,7 @@ export default async function updateChangelog({
     } = await toolkit.rest.git.createCommit({
       ...context.repo,
       tree: newTreeSha,
-      parents: [latestCommitSHA],
+      // parents: [latestCommitSHA],
       message: 'action: atualizando changelog'
     })
     core.debug(`New commit sha: ${newCommitSHA}`)

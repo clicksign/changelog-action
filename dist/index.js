@@ -524,11 +524,15 @@ const core = __importStar(__nccwpck_require__(2186));
 function updateChangelog({ toolkit, context, file, repoMain }) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const commits = yield toolkit.rest.repos.listCommits(Object.assign({}, context.repo));
-            const latestCommitSHA = commits.data[0].sha;
-            core.debug(`Last commit sha: ${latestCommitSHA}`);
-            const { data: { sha: newTreeSha } } = yield toolkit.rest.git.createTree(Object.assign(Object.assign({}, context.repo), { tree: file, base_tree: latestCommitSHA }));
-            const { data: { sha: newCommitSHA } } = yield toolkit.rest.git.createCommit(Object.assign(Object.assign({}, context.repo), { tree: newTreeSha, parents: [latestCommitSHA], message: 'action: atualizando changelog' }));
+            // const commits = await toolkit.rest.repos.listCommits({
+            //   ...context.repo
+            // })
+            // const latestCommitSHA = commits.data[0].sha
+            // core.debug(`Last commit sha: ${latestCommitSHA}`)
+            const { data: { sha: newTreeSha } } = yield toolkit.rest.git.createTree(Object.assign(Object.assign({}, context.repo), { tree: file }));
+            const { data: { sha: newCommitSHA } } = yield toolkit.rest.git.createCommit(Object.assign(Object.assign({}, context.repo), { tree: newTreeSha, 
+                // parents: [latestCommitSHA],
+                message: 'action: atualizando changelog' }));
             core.debug(`New commit sha: ${newCommitSHA}`);
             core.debug(`Repository name: ${repoMain}`);
             core.debug(`Owner: ${context.repo.owner} Repo: ${context.repo.repo}`);
