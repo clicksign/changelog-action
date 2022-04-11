@@ -33,6 +33,7 @@ export default async function updateChangelog({
       message: 'action: atualizando changelog'
     })
     core.debug(`New commit sha: ${newCommitSHA}`)
+    core.debug(`Repository name: ${repoMain}`)
 
     await toolkit.rest.git.updateRef({
       ...context.repo,
