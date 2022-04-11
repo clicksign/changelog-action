@@ -34,6 +34,7 @@ export default async function updateChangelog({
     })
     core.debug(`New commit sha: ${newCommitSHA}`)
     core.debug(`Repository name: ${repoMain}`)
+    core.debug(`Owner: ${context.repo.owner} Repo: ${context.repo.repo}`)
 
     await toolkit.rest.git.updateRef({
       ...context.repo,
