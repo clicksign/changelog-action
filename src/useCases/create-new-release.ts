@@ -34,8 +34,15 @@ export default async function createNewRelease({
 
     await toolkit.rest.git.createRef({
       ref,
-      sha: newCommitSHA || context.sha,
+      sha: context.sha,
       ...context.repo
+    })
+
+    await toolkit.rest.git.updateRef({
+      ...context.repo,
+      sha: newCommitSHA,
+      ref,
+      force: true
     })
   } catch (e: any) {
     throw new Error(e.message)
