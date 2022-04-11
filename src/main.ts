@@ -8,8 +8,8 @@ async function run(): Promise<void> {
     const logFind = core.getInput('log_find')
     const newLog = core.getInput('changelog_new_log')
     const payloadInjection = core.getInput('payload')
-    const repoMain = core.getInput('repo_main').includes('release') 
-      ? `refs/${core.getInput('repo_main')}` 
+    const repoMain = core.getInput('repo_main').includes('release')
+      ? `refs/${core.getInput('repo_main')}`
       : core.getInput('repo_main')
     const maxLogs = core.getInput('max_logs')
 
