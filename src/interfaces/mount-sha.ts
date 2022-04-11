@@ -1,8 +1,8 @@
 import {Context} from '@actions/github/lib/context'
 
-export default interface IUpdateChangelog {
+export default interface IMountSha {
   toolkit: any
   context: Context
-  newCommitSHA: string
   repoMain: string
+  file: any
 }

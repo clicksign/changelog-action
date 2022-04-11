@@ -9,6 +9,7 @@ import getOldlogs from './libs/get-old-logs'
 import mountChangelogWithNewPR from './libs/mount-changelog-with-new-pr'
 import slackSend from './useCases/slack-send'
 import newVersion from './libs/version'
+import mountSha from './libs/mount-sha'
 
 function githubToken(): string {
   const token = process.env.GITHUB_TOKEN
@@ -50,7 +51,7 @@ export default async function changelog({
 
     const modeID = '100644'
 
-    const fileMain = [
+    const file = [
       {
         mode: modeID,
         path: changelogFileName,
@@ -58,10 +59,17 @@ export default async function changelog({
       }
     ]
 
+    const newCommitSHA = await mountSha({
+      toolkit,
+      context,
+      file,
+      repoMain
+    })
+
     await updateChangelog({
       toolkit,
       context,
-      file: fileMain,
+      newCommitSHA,
       repoMain
     })
 
@@ -83,10 +91,17 @@ export default async function changelog({
         }
       ]
 
-      await createNewRelease({
+      const newCommitSHARelease = await mountSha({
         toolkit,
         context,
         file: fileRelease,
+        repoMain
+      })
+
+      await createNewRelease({
+        toolkit,
+        context,
+        newCommitSHA: newCommitSHARelease,
         logsSplit
       })
 
