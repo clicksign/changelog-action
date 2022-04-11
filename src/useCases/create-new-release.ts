@@ -7,6 +7,14 @@ export default async function createNewRelease({
   logsSplit
 }: ICreateNewRelease): Promise<void> {
   try {
+    const ref = `refs/heads/release/v${logsSplit[0].split('v')[1]}`
+
+    await toolkit.rest.git.createRef({
+      ref,
+      sha: context.sha,
+      ...context.repo
+    })
+
     const commits = await toolkit.rest.repos.listCommits({
       ...context.repo
     })
@@ -28,14 +36,6 @@ export default async function createNewRelease({
       tree: newTreeSha,
       parents: [latestCommitSHA],
       message: 'action: atualizando changelog'
-    })
-
-    const ref = `refs/heads/release/v${logsSplit[0].split('v')[1]}`
-
-    await toolkit.rest.git.createRef({
-      ref,
-      sha: context.sha,
-      ...context.repo
     })
 
     await toolkit.rest.git.updateRef({
