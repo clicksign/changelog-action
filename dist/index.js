@@ -51,6 +51,7 @@ const get_old_logs_1 = __importDefault(__nccwpck_require__(4561));
 const mount_changelog_with_new_pr_1 = __importDefault(__nccwpck_require__(2179));
 const slack_send_1 = __importDefault(__nccwpck_require__(4920));
 const version_1 = __importDefault(__nccwpck_require__(3764));
+const mount_sha_1 = __importDefault(__nccwpck_require__(5989));
 function githubToken() {
     const token = process.env.GITHUB_TOKEN;
     if (!token)
@@ -77,17 +78,23 @@ function changelog({ changelogFileName, newLog, logFind, encoding, repoMain, pay
                 maxLogs
             });
             const modeID = '100644';
-            const fileMain = [
+            const file = [
                 {
                     mode: modeID,
                     path: changelogFileName,
                     content: fullLogsWithLog
                 }
             ];
+            const newCommitSHA = yield (0, mount_sha_1.default)({
+                toolkit,
+                context: github_1.context,
+                file,
+                repoMain
+            });
             yield (0, update_changelog_1.default)({
                 toolkit,
                 context: github_1.context,
-                file: fileMain,
+                newCommitSHA,
                 repoMain
             });
             // New Release
@@ -106,10 +113,16 @@ function changelog({ changelogFileName, newLog, logFind, encoding, repoMain, pay
                         content: fullLogsNewRelase
                     }
                 ];
-                yield (0, create_new_release_1.default)({
+                const newCommitSHARelease = yield (0, mount_sha_1.default)({
                     toolkit,
                     context: github_1.context,
                     file: fileRelease,
+                    repoMain
+                });
+                yield (0, create_new_release_1.default)({
+                    toolkit,
+                    context: github_1.context,
+                    newCommitSHA: newCommitSHARelease,
                     logsSplit
                 });
                 const release = (0, version_1.default)(logsSplit[0]);
@@ -253,6 +266,34 @@ exports["default"] = mountPayload;
 
 /***/ }),
 
+/***/ 5989:
+/***/ (function(__unused_webpack_module, exports) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+function mountSha({ toolkit, context, repoMain, file }) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { data: { object: { sha: refSha } } } = yield toolkit.rest.git.getRef(Object.assign(Object.assign({}, context.repo), { ref: repoMain }));
+        const { data: { sha: newTreeSha } } = yield toolkit.rest.git.createTree(Object.assign(Object.assign({}, context.repo), { tree: file, base_tree: refSha }));
+        const { data: { sha: newCommitSHA } } = yield toolkit.rest.git.createCommit(Object.assign(Object.assign({}, context.repo), { tree: newTreeSha, parents: [refSha], message: 'action: atualizando changelog' }));
+        return newCommitSHA;
+    });
+}
+exports["default"] = mountSha;
+
+
+/***/ }),
+
 /***/ 4903:
 /***/ ((__unused_webpack_module, exports) => {
 
@@ -337,7 +378,9 @@ function run() {
             const newLog = core.getInput('changelog_new_log');
             const payloadInjection = core.getInput('payload');
             const repoMain = core.getInput('repo_main');
-            const maxLogs = core.getInput('max_logs');
+            const maxLogs = core.getInput('repo_main').includes('release')
+                ? '999'
+                : core.getInput('max_logs');
             core.debug(`Start update changelog ${new Date().toTimeString()}`);
             yield (0, changelog_1.default)({
                 changelogFileName,
@@ -377,13 +420,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-function createNewRelease({ toolkit, context, file, logsSplit }) {
+function createNewRelease({ toolkit, context, newCommitSHA, logsSplit }) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const commits = yield toolkit.rest.repos.listCommits(Object.assign({}, context.repo));
-            const latestCommitSHA = commits.data[0].sha;
-            const { data: { sha: newTreeSha } } = yield toolkit.rest.git.createTree(Object.assign(Object.assign({}, context.repo), { tree: file, base_tree: latestCommitSHA }));
-            const { data: { sha: newCommitSHA } } = yield toolkit.rest.git.createCommit(Object.assign(Object.assign({}, context.repo), { tree: newTreeSha, parents: [latestCommitSHA], message: 'action: atualizando changelog' }));
             const ref = `refs/heads/release/v${logsSplit[0].split('v')[1]}`;
             yield toolkit.rest.git.createRef(Object.assign({ ref, sha: newCommitSHA || context.sha }, context.repo));
         }
@@ -483,33 +522,10 @@ exports["default"] = slackSend;
 /***/ }),
 
 /***/ 4846:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+/***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -520,16 +536,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core = __importStar(__nccwpck_require__(2186));
-function updateChangelog({ toolkit, context, file, repoMain }) {
+function updateChangelog({ toolkit, context, newCommitSHA, repoMain }) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const commits = yield toolkit.rest.repos.listCommits(Object.assign({}, context.repo));
-            const latestCommitSHA = commits.data[0].sha;
-            core.debug(`Last commit sha: ${latestCommitSHA}`);
-            const { data: { sha: newTreeSha } } = yield toolkit.rest.git.createTree(Object.assign(Object.assign({}, context.repo), { tree: file, base_tree: latestCommitSHA }));
-            const { data: { sha: newCommitSHA } } = yield toolkit.rest.git.createCommit(Object.assign(Object.assign({}, context.repo), { tree: newTreeSha, parents: [latestCommitSHA], message: 'action: atualizando changelog' }));
-            core.debug(`New commit sha: ${newCommitSHA}`);
             yield toolkit.rest.git.updateRef(Object.assign(Object.assign({}, context.repo), { sha: newCommitSHA, ref: repoMain, force: true }));
         }
         catch (e) {
