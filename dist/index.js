@@ -378,7 +378,9 @@ function run() {
             const newLog = core.getInput('changelog_new_log');
             const payloadInjection = core.getInput('payload');
             const repoMain = core.getInput('repo_main');
-            const maxLogs = core.getInput('max_logs');
+            const maxLogs = core.getInput('repo_main').includes('release')
+                ? '999'
+                : core.getInput('max_logs');
             core.debug(`Start update changelog ${new Date().toTimeString()}`);
             yield (0, changelog_1.default)({
                 changelogFileName,
