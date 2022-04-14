@@ -37,6 +37,7 @@ export default async function changelog({
     const oldLogs = await getOldlogs({changelogFileName, encoding})
     const quantityLogs = countLogsLastInRelease(oldLogs, logFind)
     const logsSplit = oldLogs.split('\n')
+    const release = newVersion(logsSplit[0])
 
     core.debug(`Current release: ${logsSplit[0]}`)
     core.debug(`Quantity logs in ${logsSplit[0]}: ${quantityLogs}`)
@@ -58,6 +59,14 @@ export default async function changelog({
         content: fullLogsWithLog
       }
     ]
+
+    if (quantityLogs >= maxLogs) {
+      file[1] = {
+        mode: modeID,
+        path: 'REVISION',
+        content: release
+      }
+    }
 
     const newCommitSHA = await mountSha({
       toolkit,
@@ -104,8 +113,6 @@ export default async function changelog({
         newCommitSHA: newCommitSHARelease,
         logsSplit
       })
-
-      const release = newVersion(logsSplit[0])
 
       await slackSend(payloadInjection, release)
     }
