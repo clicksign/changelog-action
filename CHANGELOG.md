@@ -1,10 +1,3 @@
-# v1.5.0
-
-## Alterações
-- [DEVOPS] Get she dynamic
-- feature: add max logs in codition
----
-
 # v1.4.0
 
 ## Alterações
