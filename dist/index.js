@@ -68,6 +68,7 @@ function changelog({ changelogFileName, newLog, logFind, encoding, repoMain, pay
             const oldLogs = yield (0, get_old_logs_1.default)({ changelogFileName, encoding });
             const quantityLogs = (0, quantity_logs_1.default)(oldLogs, logFind);
             const logsSplit = oldLogs.split('\n');
+            const release = (0, version_1.default)(logsSplit[0]);
             core.debug(`Current release: ${logsSplit[0]}`);
             core.debug(`Quantity logs in ${logsSplit[0]}: ${quantityLogs}`);
             const fullLogsWithLog = (0, mount_changelog_with_new_pr_1.default)({
@@ -85,6 +86,13 @@ function changelog({ changelogFileName, newLog, logFind, encoding, repoMain, pay
                     content: fullLogsWithLog
                 }
             ];
+            if (quantityLogs >= maxLogs) {
+                file[1] = {
+                    mode: modeID,
+                    path: 'REVISION',
+                    content: release
+                };
+            }
             const newCommitSHA = yield (0, mount_sha_1.default)({
                 toolkit,
                 context: github_1.context,
@@ -125,7 +133,6 @@ function changelog({ changelogFileName, newLog, logFind, encoding, repoMain, pay
                     newCommitSHA: newCommitSHARelease,
                     logsSplit
                 });
-                const release = (0, version_1.default)(logsSplit[0]);
                 yield (0, slack_send_1.default)(payloadInjection, release);
             }
         }
