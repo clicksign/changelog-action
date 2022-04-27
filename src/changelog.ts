@@ -91,12 +91,20 @@ export default async function changelog({
         quantityLogs: 0,
         maxLogs
       })
+      const releaseSplit = release.split('.')
+      releaseSplit[1] = (parseInt(releaseSplit[1]) - 1).toString()
+      const releaseCurrentVersion = releaseSplit.join('.')
 
       const fileRelease = [
         {
           mode: modeID,
           path: changelogFileName,
           content: fullLogsNewRelase
+        },
+        {
+          mode: modeID,
+          path: 'REVISION',
+          content: releaseCurrentVersion
         }
       ]
 
