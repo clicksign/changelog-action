@@ -1,6 +1,7 @@
 import {IMountPayload} from '../interfaces/index'
 
 export default function mountPayload({
+  repoName,
   newRelease,
   mainRelease,
   time
@@ -13,7 +14,7 @@ export default function mountPayload({
         "elements" : [
           {
             "type": "mrkdwn",
-            "text": "*NOVA RELEASE*"
+            "text": "*NOVA RELEASE* \`${repoName}\`"
           },
           {
             "type": "mrkdwn",

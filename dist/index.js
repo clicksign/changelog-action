@@ -141,7 +141,7 @@ function changelog({ changelogFileName, newLog, logFind, encoding, repoMain, pay
                     newCommitSHA: newCommitSHARelease,
                     logsSplit
                 });
-                yield (0, slack_send_1.default)(payloadInjection, release);
+                yield (0, slack_send_1.default)(payloadInjection, release, github_1.context.repo.repo);
             }
         }
         catch (e) {
@@ -233,7 +233,7 @@ exports["default"] = mountChangelogWithNewPR;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-function mountPayload({ newRelease, mainRelease, time }) {
+function mountPayload({ repoName, newRelease, mainRelease, time }) {
     return `{
     "text": "NOVA RELEASE :new::new::new:.",
     "blocks": [
@@ -242,7 +242,7 @@ function mountPayload({ newRelease, mainRelease, time }) {
         "elements" : [
           {
             "type": "mrkdwn",
-            "text": "*NOVA RELEASE*"
+            "text": "*NOVA RELEASE* \`${repoName}\`"
           },
           {
             "type": "mrkdwn",
@@ -495,7 +495,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const axios_1 = __importDefault(__nccwpck_require__(6545));
 const core = __importStar(__nccwpck_require__(2186));
 const mount_payload_1 = __importDefault(__nccwpck_require__(4341));
-function slackSend(payloadInject, release) {
+function slackSend(payloadInject, release, repoName) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const webhookUrl = process.env.SLACK_WEBHOOK_URL;
@@ -508,6 +508,7 @@ function slackSend(payloadInject, release) {
                 const newRelease = release.split('.');
                 newRelease[1] = (parseInt(newRelease[1]) - 1).toString();
                 payload = (0, mount_payload_1.default)({
+                    repoName,
                     newRelease: `release/v${newRelease.join('.')}`,
                     mainRelease: `release/v${release}`,
                     time

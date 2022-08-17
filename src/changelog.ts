@@ -122,7 +122,7 @@ export default async function changelog({
         logsSplit
       })
 
-      await slackSend(payloadInjection, release)
+      await slackSend(payloadInjection, release, context.repo.repo)
     }
   } catch (e: any) {
     throw new Error(e.message)

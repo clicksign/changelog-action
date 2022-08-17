@@ -172,6 +172,7 @@ ${logFind}\n- ${newLog}
   it('should mount payload', async () => {
     const time = new Date().toTimeString()
     const payload = mountPayload({
+      repoName: 'changelog-action',
       newRelease: 'release/v1.0.0',
       mainRelease: 'release/v1.1.0',
       time
@@ -185,7 +186,7 @@ ${logFind}\n- ${newLog}
           "elements" : [
             {
               "type": "mrkdwn",
-              "text": "*NOVA RELEASE*"
+              "text": "*NOVA RELEASE* \`changelog-action\`"
             },
             {
               "type": "mrkdwn",

@@ -5,7 +5,8 @@ import mountPayload from '../libs/mount-payload'
 
 export default async function slackSend(
   payloadInject: string,
-  release: string
+  release: string,
+  repoName: string
 ): Promise<void> {
   try {
     const webhookUrl = process.env.SLACK_WEBHOOK_URL
@@ -18,6 +19,7 @@ export default async function slackSend(
       const newRelease = release.split('.')
       newRelease[1] = (parseInt(newRelease[1]) - 1).toString()
       payload = mountPayload({
+        repoName,
         newRelease: `release/v${newRelease.join('.')}`,
         mainRelease: `release/v${release}`,
         time
