@@ -1,0 +1,71 @@
+name: Code Scanner
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - release/**
+  pull_request:
+    branches:
+      - main
+      - release/**
+
+jobs:
+  sonarQubeTrigger:
+    name: SonarQube Trigger
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Github
+      uses: actions/checkout@master
+
+    - name: Install Oathtool and Expect
+      run: |
+        sudo apt-get update
+        sudo apt-get -y install oathtool
+        sudo apt-get -y install expect
+
+    - name: Install Teleport
+      run: |
+        sudo curl https://apt.releases.teleport.dev/gpg -o /usr/share/keyrings/teleport-archive-keyring.asc
+        source /etc/os-release
+        echo "deb [signed-by=/usr/share/keyrings/teleport-archive-keyring.asc] \
+          https://apt.releases.teleport.dev/${ID?} ${VERSION_CODENAME?} stable/v10" \
+          | sudo tee /etc/apt/sources.list.d/teleport.list > /dev/null
+        sudo apt-get update
+        sudo apt-get -y install teleport
+
+    - name: Create Expect Teleport Login
+      run: |
+        cat << EOF > teleport_login.exp
+        #!/usr/bin/expect -f
+
+        set teleport_user [lindex $argv 0]
+        set teleport_pass [lindex $argv 1]
+        set teleport_otp [lindex $argv 2]
+
+        set timeout -1
+        spawn tsh login --proxy=${{ secrets.TELEPORT_URL }} --auth=local --user=$teleport_user
+
+        expect -exact "Enter password:"
+        send -- "$teleport_pass\n"
+
+        expect -exact "Enter your OTP token:"
+        send -- "$teleport_otp\n"
+
+        expect eof
+        EOF
+
+        chmod +x ./teleport-login.exp
+
+    - name: Teleport Login
+      run: |
+        ./teleport-login.exp ${{ secrets.TELEPORT_USER }} ${{ secrets.TELEPORT_PASS }} $ $(oathtool --base32 --totp ${{ secrets.TELEPORT_SEED }})
+        tsh app login sonarqube
+        tsh proxy app -p 8080 sonarqube &
+
+    - name: SonarQube Scan
+      uses: sonarsource/sonarqube-scan-action@master
+      with:
+        SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST }}
+        SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
