@@ -45,13 +45,13 @@ jobs:
         set teleport_otp [lindex $argv 2]
 
         set timeout -1
-        spawn tsh login --proxy=${{ secrets.TELEPORT_URL }} --auth=local --user=$teleport_user
+        spawn tsh login --proxy=${{ secrets.TELEPORT_URL }} --auth=local --user=\$teleport_user
 
-        expect -exact "Enter password for Teleport user $teleport_user:"
-        send -- "$teleport_pass\n"
+        expect -exact "Enter password for Teleport user \$teleport_user:"
+        send -- "\$teleport_pass\n"
 
         expect -exact "Enter your OTP token:"
-        send -- "$teleport_otp\n"
+        send -- "\$teleport_otp\n"
 
         expect eof
         EOF
