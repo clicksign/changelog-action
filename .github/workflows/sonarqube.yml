@@ -40,19 +40,14 @@ jobs:
         cat << EOF > ./teleport_login.exp
         #!/usr/bin/expect -f
 
-        set teleport_url [lindex $argv 0]
-        set teleport_user [lindex $argv 1]
-        set teleport_pass [lindex $argv 2]
-        set teleport_otp [lindex $argv 3]
-
         set timeout -1
-        spawn tsh login --proxy=\$teleport_url --auth=local --user=\$teleport_user
+        spawn tsh login --proxy=${{ secrets.TELEPORT_URL }} --auth=local --user=${{ secrets.TELEPORT_USER }}
 
-        expect -exact "Enter password for Teleport user \$teleport_user:"
-        send -- "\$teleport_pass\n"
+        expect -exact "Enter password for Teleport user ${{ secrets.TELEPORT_USER }}:"
+        send -- "${{ secrets.TELEPORT_PASS }}\n"
 
         expect -exact "Enter your OTP token:"
-        send -- "\$teleport_otp\n"
+        send -- "$(oathtool --base32 --totp ${{ secrets.TELEPORT_SEED }})\n"
 
         expect eof
         EOF
@@ -62,7 +57,7 @@ jobs:
 
     - name: Teleport Login
       run: |
-        ./teleport_login.exp ${{ secrets.TELEPORT_URL }} ${{ secrets.TELEPORT_USER }} ${{ secrets.TELEPORT_PASS }} $ $(oathtool --base32 --totp ${{ secrets.TELEPORT_SEED }})
+        ./teleport_login.exp
         tsh app login sonarqube
         tsh proxy app -p 8080 sonarqube &
 
