@@ -37,7 +37,7 @@ jobs:
 
     - name: Create Expect Teleport Login
       run: |
-        cat << EOF > teleport_login.exp
+        cat << EOF > ./teleport_login.exp
         #!/usr/bin/expect -f
 
         set teleport_user [lindex $argv 0]
@@ -56,11 +56,11 @@ jobs:
         expect eof
         EOF
 
-        chmod +x ./teleport-login.exp
+        chmod +x ./teleport_login.exp
 
     - name: Teleport Login
       run: |
-        ./teleport-login.exp ${{ secrets.TELEPORT_USER }} ${{ secrets.TELEPORT_PASS }} $ $(oathtool --base32 --totp ${{ secrets.TELEPORT_SEED }})
+        ./teleport_login.exp ${{ secrets.TELEPORT_USER }} ${{ secrets.TELEPORT_PASS }} $ $(oathtool --base32 --totp ${{ secrets.TELEPORT_SEED }})
         tsh app login sonarqube
         tsh proxy app -p 8080 sonarqube &
 
