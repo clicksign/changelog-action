@@ -60,11 +60,8 @@ jobs:
         chmod +x ./teleport_login.exp
 
     - name: Teleport Login
-      env:
-        TELEPORT_USER: ${{ secrets.TELEPORT_USER }}
-        TELEPORT_PASS: ${{ secrets.TELEPORT_PASS }}
       run: |
-        ./teleport_login.exp $TELEPORT_USER $TELEPORT_PASS $ $(oathtool --base32 --totp ${{ secrets.TELEPORT_SEED }})
+        ./teleport_login.exp ${{ secrets.TELEPORT_USER }} ${{ secrets.TELEPORT_PASS }} $ $(oathtool --base32 --totp ${{ secrets.TELEPORT_SEED }})
         tsh app login sonarqube
         tsh proxy app -p 8080 sonarqube &
 
