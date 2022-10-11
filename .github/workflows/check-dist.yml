@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: Checkout Github
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.1.0
 
       - name: Set Node.js 16.x
         uses: actions/setup-node@v3
