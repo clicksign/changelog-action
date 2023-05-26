@@ -34,13 +34,17 @@ describe('Cangelog Action', () => {
     const logFind = 'file read test'
     const quantityLogs = countLogsLastInRelease(oldLogs, logFind)
     const maxLogs = 4
+    const createReleaseWitBracherHistory = 'false'
+    const brancherHistoryName = 'feature/test'
 
     const finalLog = mountChangelogWithNewPR({
       newLog,
       oldLogs,
       logFind,
       quantityLogs,
-      maxLogs
+      maxLogs,
+      createReleaseWitBracherHistory,
+      brancherHistoryName
     })
     expect(`${oldLogs}\n- ${newLog}`).toBe(finalLog)
   })
@@ -59,6 +63,8 @@ describe('Cangelog Action', () => {
     const logFind = '## Alterações'
     const quantityLogs = countLogsLastInRelease(oldLogs, logFind)
     const maxLogs = 4
+    const createReleaseWitBracherHistory = 'false'
+    const brancherHistoryName = 'feature/test'
 
     const log = `# v1.0.0
 
@@ -71,7 +77,9 @@ ${logFind}\n- ${newLog}
       oldLogs,
       logFind,
       quantityLogs,
-      maxLogs
+      maxLogs,
+      createReleaseWitBracherHistory,
+      brancherHistoryName
     })
     expect(log).toBe(finalLog)
   })
@@ -82,6 +90,8 @@ ${logFind}\n- ${newLog}
     const logFind = '## Alterações'
     const quantityLogs = countLogsLastInRelease(oldLogs, logFind)
     const maxLogs = 4
+    const createReleaseWitBracherHistory = 'false'
+    const brancherHistoryName = 'feature/test'
 
     const log = `# v1.0.0
 
@@ -97,7 +107,9 @@ ${logFind}\n- ${newLog}
       oldLogs,
       logFind,
       quantityLogs,
-      maxLogs
+      maxLogs,
+      createReleaseWitBracherHistory,
+      brancherHistoryName
     })
     expect(log).toBe(finalLog)
   })
@@ -108,6 +120,8 @@ ${logFind}\n- ${newLog}
     const logFind = '## Alterações'
     const quantityLogs = countLogsLastInRelease(oldLogs, logFind)
     const maxLogs = 4
+    const createReleaseWitBracherHistory = 'false'
+    const brancherHistoryName = 'feature/test'
 
     const log = `# v1.2.0
 
@@ -140,7 +154,9 @@ ${logFind}\n- ${newLog}
       oldLogs,
       logFind,
       quantityLogs,
-      maxLogs
+      maxLogs,
+      createReleaseWitBracherHistory,
+      brancherHistoryName
     })
     expect(log).toBe(finalLog)
   })
@@ -231,5 +247,37 @@ ${logFind}\n- ${newLog}
         .split(' ')
         .join('')
     )
+  })
+
+  it('should mount final log with brancher history', async () => {
+    const newLog = 'add log'
+    const oldLogs = await getOldLogs('__tests__/test2.md')
+    const logFind = '## Alterações'
+    const quantityLogs = countLogsLastInRelease(oldLogs, logFind)
+    const maxLogs = 4
+    const createReleaseWitBracherHistory = 'true'
+    const brancherHistoryName = 'history/test'
+
+    const log = `# v1.1.0
+
+## Alterações
+---
+
+# v1.0.0
+
+${logFind}\n- ${newLog}
+---
+`
+
+    const finalLog = mountChangelogWithNewPR({
+      newLog,
+      oldLogs,
+      logFind,
+      quantityLogs,
+      maxLogs,
+      createReleaseWitBracherHistory,
+      brancherHistoryName
+    })
+    expect(log).toBe(finalLog)
   })
 })

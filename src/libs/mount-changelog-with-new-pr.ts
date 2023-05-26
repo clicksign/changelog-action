@@ -7,7 +7,9 @@ export default function mountChangelogWithNewPR({
   oldLogs,
   logFind,
   quantityLogs,
-  maxLogs
+  maxLogs,
+  createReleaseWitBracherHistory,
+  brancherHistoryName
 }: IMountLog): string {
   const logsSplit = oldLogs.split('\n')
 
@@ -23,7 +25,11 @@ export default function mountChangelogWithNewPR({
 
   logsSplit[firstIndexWord] = `${logFind}\n- ${newLog}`
 
-  if (quantityLogs >= maxLogs) {
+  if (
+    quantityLogs >= maxLogs ||
+    (createReleaseWitBracherHistory === 'true' &&
+      brancherHistoryName.startsWith('history'))
+  ) {
     const releaseNewVersion = newVersion(logsSplit[0])
     const changelogWithNewVersion = `# v${releaseNewVersion}\n\n${logFind}\n---\n\n${logsSplit[0]}`
     logsSplit[0] = changelogWithNewVersion

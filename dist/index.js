@@ -58,7 +58,7 @@ function githubToken() {
         throw ReferenceError('No token defined in the environment variables');
     return token;
 }
-function changelog({ changelogFileName, newLog, logFind, encoding, repoMain, payloadInjection, maxLogs }) {
+function changelog({ changelogFileName, newLog, logFind, encoding, repoMain, payloadInjection, maxLogs, createReleaseWitBracherHistory, brancherHistoryName }) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             core.debug(`Name File: ${changelogFileName}`);
@@ -72,7 +72,9 @@ function changelog({ changelogFileName, newLog, logFind, encoding, repoMain, pay
             core.debug(`Current release: ${logsSplit[0]}`);
             core.debug(`Quantity logs in ${logsSplit[0]}: ${quantityLogs}`);
             // New Release
-            if (quantityLogs >= maxLogs) {
+            if (quantityLogs >= maxLogs ||
+                (createReleaseWitBracherHistory === 'true' &&
+                    brancherHistoryName.startsWith('history'))) {
                 yield (0, create_new_release_1.default)({
                     toolkit,
                     context: github_1.context,
@@ -85,7 +87,9 @@ function changelog({ changelogFileName, newLog, logFind, encoding, repoMain, pay
                 oldLogs,
                 logFind,
                 quantityLogs,
-                maxLogs
+                maxLogs,
+                createReleaseWitBracherHistory,
+                brancherHistoryName
             });
             const modeID = '100644';
             const file = [
@@ -95,7 +99,9 @@ function changelog({ changelogFileName, newLog, logFind, encoding, repoMain, pay
                     content: fullLogsWithLog
                 }
             ];
-            if (quantityLogs >= maxLogs) {
+            if (quantityLogs >= maxLogs ||
+                (createReleaseWitBracherHistory === 'true' &&
+                    brancherHistoryName.startsWith('history'))) {
                 file[1] = {
                     mode: modeID,
                     path: 'REVISION',
@@ -172,7 +178,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const version_1 = __importDefault(__nccwpck_require__(3764));
-function mountChangelogWithNewPR({ newLog, oldLogs, logFind, quantityLogs, maxLogs }) {
+function mountChangelogWithNewPR({ newLog, oldLogs, logFind, quantityLogs, maxLogs, createReleaseWitBracherHistory, brancherHistoryName }) {
     const logsSplit = oldLogs.split('\n');
     if (logsSplit.length === 1) {
         return `${logFind}\n- ${newLog}`;
@@ -183,7 +189,9 @@ function mountChangelogWithNewPR({ newLog, oldLogs, logFind, quantityLogs, maxLo
         }
     });
     logsSplit[firstIndexWord] = `${logFind}\n- ${newLog}`;
-    if (quantityLogs >= maxLogs) {
+    if (quantityLogs >= maxLogs ||
+        (createReleaseWitBracherHistory === 'true' &&
+            brancherHistoryName.startsWith('history'))) {
         const releaseNewVersion = (0, version_1.default)(logsSplit[0]);
         const changelogWithNewVersion = `# v${releaseNewVersion}\n\n${logFind}\n---\n\n${logsSplit[0]}`;
         logsSplit[0] = changelogWithNewVersion;
@@ -367,6 +375,9 @@ function run() {
             const maxLogs = core.getInput('repo_main').includes('release')
                 ? '999'
                 : core.getInput('max_logs');
+            // create brancher using history brancher
+            const createReleaseWitBracherHistory = core.getInput('create_release_with_brancher_history');
+            const brancherHistoryName = core.getInput('brancher_history_name');
             core.debug(`Start update changelog ${new Date().toTimeString()}`);
             yield (0, changelog_1.default)({
                 changelogFileName,
@@ -375,7 +386,9 @@ function run() {
                 encoding,
                 repoMain,
                 payloadInjection,
-                maxLogs: parseInt(maxLogs)
+                maxLogs: parseInt(maxLogs),
+                createReleaseWitBracherHistory,
+                brancherHistoryName
             });
             core.debug(`Finished update changelog${new Date().toTimeString()}`);
             core.setOutput('time', new Date().toTimeString());
