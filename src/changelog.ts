@@ -29,7 +29,9 @@ export default async function changelog({
   createReleaseWitBracherHistory
 }: IChangeLog): Promise<void> {
   if (createReleaseWitBracherHistory === 'true') {
-    core.debug(context.ref)
+    const teste = context.ref.split('/')
+    core.debug(teste[2])
+    core.debug(teste[3])
     return
   }
 

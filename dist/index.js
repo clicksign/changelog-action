@@ -61,7 +61,9 @@ function githubToken() {
 function changelog({ changelogFileName, newLog, logFind, encoding, repoMain, payloadInjection, maxLogs, createReleaseWitBracherHistory }) {
     return __awaiter(this, void 0, void 0, function* () {
         if (createReleaseWitBracherHistory === 'true') {
-            core.debug(github_1.context.ref);
+            const teste = github_1.context.ref.split('/');
+            core.debug(teste[2]);
+            core.debug(teste[3]);
             return;
         }
         try {
