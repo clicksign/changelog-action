@@ -58,8 +58,12 @@ function githubToken() {
         throw ReferenceError('No token defined in the environment variables');
     return token;
 }
-function changelog({ changelogFileName, newLog, logFind, encoding, repoMain, payloadInjection, maxLogs }) {
+function changelog({ changelogFileName, newLog, logFind, encoding, repoMain, payloadInjection, maxLogs, createReleaseWitBracherHistory }) {
     return __awaiter(this, void 0, void 0, function* () {
+        if (createReleaseWitBracherHistory === 'true') {
+            core.debug(github_1.context.ref);
+            return;
+        }
         try {
             core.debug(`Name File: ${changelogFileName}`);
             core.debug(`Initial log find: ${logFind}`);
@@ -72,6 +76,7 @@ function changelog({ changelogFileName, newLog, logFind, encoding, repoMain, pay
             core.debug(`Current release: ${logsSplit[0]}`);
             core.debug(`Quantity logs in ${logsSplit[0]}: ${quantityLogs}`);
             // New Release
+            core.debug(createReleaseWitBracherHistory);
             if (quantityLogs >= maxLogs) {
                 yield (0, create_new_release_1.default)({
                     toolkit,
@@ -367,6 +372,7 @@ function run() {
             const maxLogs = core.getInput('repo_main').includes('release')
                 ? '999'
                 : core.getInput('max_logs');
+            const createReleaseWitBracherHistory = core.getInput('create_release_with_brancher_history');
             core.debug(`Start update changelog ${new Date().toTimeString()}`);
             yield (0, changelog_1.default)({
                 changelogFileName,
@@ -375,7 +381,8 @@ function run() {
                 encoding,
                 repoMain,
                 payloadInjection,
-                maxLogs: parseInt(maxLogs)
+                maxLogs: parseInt(maxLogs),
+                createReleaseWitBracherHistory
             });
             core.debug(`Finished update changelog${new Date().toTimeString()}`);
             core.setOutput('time', new Date().toTimeString());

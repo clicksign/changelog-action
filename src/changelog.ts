@@ -25,8 +25,14 @@ export default async function changelog({
   encoding,
   repoMain,
   payloadInjection,
-  maxLogs
+  maxLogs,
+  createReleaseWitBracherHistory
 }: IChangeLog): Promise<void> {
+  if (createReleaseWitBracherHistory === 'true') {
+    core.debug(context.ref)
+    return
+  }
+
   try {
     core.debug(`Name File: ${changelogFileName}`)
     core.debug(`Initial log find: ${logFind}`)
@@ -43,6 +49,7 @@ export default async function changelog({
     core.debug(`Quantity logs in ${logsSplit[0]}: ${quantityLogs}`)
 
     // New Release
+    core.debug(createReleaseWitBracherHistory)
     if (quantityLogs >= maxLogs) {
       await createNewRelease({
         toolkit,

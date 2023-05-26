@@ -33,6 +33,10 @@ inputs:
     required: false
     description: 'add encoded read file'
     default: '5'
+  create_release_with_brancher_history:
+    required: false
+    description: 'create brancher release using history brancher'
+    default: "false"
 runs:
   using: 'node12'
   main: 'dist/index.js'
