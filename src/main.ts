@@ -12,9 +12,12 @@ async function run(): Promise<void> {
     const maxLogs = core.getInput('repo_main').includes('release')
       ? '999'
       : core.getInput('max_logs')
+
+    // create brancher using history brancher
     const createReleaseWitBracherHistory = core.getInput(
       'create_release_with_brancher_history'
     )
+    const brancherHistoryName = core.getInput('brancher_history_name')
 
     core.debug(`Start update changelog ${new Date().toTimeString()}`)
 
@@ -26,7 +29,8 @@ async function run(): Promise<void> {
       repoMain,
       payloadInjection,
       maxLogs: parseInt(maxLogs),
-      createReleaseWitBracherHistory
+      createReleaseWitBracherHistory,
+      brancherHistoryName
     })
 
     core.debug(`Finished update changelog${new Date().toTimeString()}`)

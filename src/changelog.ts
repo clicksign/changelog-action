@@ -26,15 +26,9 @@ export default async function changelog({
   repoMain,
   payloadInjection,
   maxLogs,
-  createReleaseWitBracherHistory
+  createReleaseWitBracherHistory,
+  brancherHistoryName
 }: IChangeLog): Promise<void> {
-  if (createReleaseWitBracherHistory === 'true') {
-    const teste = context.ref.split('/')
-    core.debug(teste[2])
-    core.debug(teste[3])
-    return
-  }
-
   try {
     core.debug(`Name File: ${changelogFileName}`)
     core.debug(`Initial log find: ${logFind}`)
@@ -51,8 +45,11 @@ export default async function changelog({
     core.debug(`Quantity logs in ${logsSplit[0]}: ${quantityLogs}`)
 
     // New Release
-    core.debug(createReleaseWitBracherHistory)
-    if (quantityLogs >= maxLogs) {
+    if (
+      quantityLogs >= maxLogs ||
+      (createReleaseWitBracherHistory === 'true' &&
+        brancherHistoryName.startsWith('history'))
+    ) {
       await createNewRelease({
         toolkit,
         context,
@@ -67,7 +64,9 @@ export default async function changelog({
       oldLogs,
       logFind,
       quantityLogs,
-      maxLogs
+      maxLogs,
+      createReleaseWitBracherHistory,
+      brancherHistoryName
     })
 
     const modeID = '100644'
@@ -80,7 +79,11 @@ export default async function changelog({
       }
     ]
 
-    if (quantityLogs >= maxLogs) {
+    if (
+      quantityLogs >= maxLogs ||
+      (createReleaseWitBracherHistory === 'true' &&
+        brancherHistoryName.startsWith('history'))
+    ) {
       file[1] = {
         mode: modeID,
         path: 'REVISION',

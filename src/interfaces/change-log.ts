@@ -7,4 +7,5 @@ export default interface IChangelog {
   payloadInjection: string
   maxLogs: number
   createReleaseWitBracherHistory: string
+  brancherHistoryName: string
 }

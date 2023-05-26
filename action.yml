@@ -37,6 +37,9 @@ inputs:
     required: false
     description: 'create brancher release using history brancher'
     default: "false"
+  brancher_history_name:
+    required: false
+    description: 'Brancher history name'
 runs:
   using: 'node12'
   main: 'dist/index.js'
