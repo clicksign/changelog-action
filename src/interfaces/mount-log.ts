@@ -4,6 +4,4 @@ export default interface IMountLog {
   logFind: string
   quantityLogs: number
   maxLogs: number
-  createReleaseWitBracherHistory: string
-  brancherHistoryName: string
 }

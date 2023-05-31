@@ -13,12 +13,6 @@ async function run(): Promise<void> {
       ? '999'
       : core.getInput('max_logs')
 
-    // create brancher using history brancher
-    const createReleaseWitBracherHistory = core.getInput(
-      'create_release_with_brancher_history'
-    )
-    const brancherHistoryName = core.getInput('brancher_history_name')
-
     core.debug(`Start update changelog ${new Date().toTimeString()}`)
 
     await changelog({
@@ -28,9 +22,7 @@ async function run(): Promise<void> {
       encoding,
       repoMain,
       payloadInjection,
-      maxLogs: parseInt(maxLogs),
-      createReleaseWitBracherHistory,
-      brancherHistoryName
+      maxLogs: parseInt(maxLogs)
     })
 
     core.debug(`Finished update changelog${new Date().toTimeString()}`)

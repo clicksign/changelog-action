@@ -10,7 +10,7 @@ on:
 jobs:
   update-changelog:
     runs-on: ubuntu-latest
-    # if: "startsWith(github.event.head_commit.message, 'Merge')"
+    if: "startsWith(github.event.head_commit.message, 'Merge')"
     steps:
       - name: Checkout Github
         uses: actions/checkout@v3
@@ -24,6 +24,5 @@ jobs:
         with:
           changelog_new_log: ${{ steps.get_message.outputs.MESSAGE }}
           log_find: '## Alterações'
-          create_release_with_brancher_history: 'true'
         env:
           GITHUB_TOKEN: ${{secrets.TOKEN}}

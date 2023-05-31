@@ -6,6 +6,4 @@ export default interface IChangelog {
   repoMain: string
   payloadInjection: string
   maxLogs: number
-  createReleaseWitBracherHistory: string
-  brancherHistoryName: string
 }
