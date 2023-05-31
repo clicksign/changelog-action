@@ -1,6 +1,12 @@
+# v1.5.0
+
+## Alterações
+---
+
 # v1.4.0
 
 ## Alterações
+- [KZ26110] add pr url in final log - [#213](https://github.com/clicksign/changelog-action/pull/213)
 - [REFACTOR] Change mount payload
 - [FEATURE] Add slack send message
 - build(deps-dev): bump ts-jest from 27.1.3 to 27.1.4
