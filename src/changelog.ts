@@ -49,7 +49,7 @@ export default async function changelog({
         direction: 'desc'
       })
 
-      finalLog = `${newLog} - [#${response.data[0].number}](${response.data[0].html_url})`
+      finalLog = `${newLog} > [#${response.data[0].number}](${response.data[0].html_url})`
     }
 
     const oldLogs = await getOldlogs({changelogFileName, encoding})
@@ -60,30 +60,29 @@ export default async function changelog({
     core.debug(`Current release: ${logsSplit[0]}`)
     core.debug(`Quantity logs in ${logsSplit[0]}: ${quantityLogs}`)
 
-    const fullLogsWithLog = mountChangelogWithNewPR({
-      newLog: finalLog,
-      oldLogs,
-      logFind,
-      quantityLogs,
-      maxLogs
-    })
-
     const modeID = '100644'
-
-    const file = [
-      {
-        mode: modeID,
-        path: changelogFileName,
-        content: fullLogsWithLog
-      }
-    ]
 
     // New Release
     if (quantityLogs >= maxLogs) {
+      const lastLogRelease = mountChangelogWithNewPR({
+        newLog: finalLog,
+        oldLogs,
+        logFind,
+        quantityLogs: 0,
+        maxLogs
+      })
+
+      const fileRelease = [
+        {
+          mode: modeID,
+          path: changelogFileName,
+          content: lastLogRelease
+        }
+      ]
       const newCommitSHARelease = await mountSha({
         toolkit,
         context,
-        file,
+        file: fileRelease,
         repoMain
       })
 
@@ -96,6 +95,22 @@ export default async function changelog({
 
       await slackSend(payloadInjection, release, context.repo.repo)
     }
+
+    const fullLogsWithLog = mountChangelogWithNewPR({
+      newLog: finalLog,
+      oldLogs,
+      logFind,
+      quantityLogs,
+      maxLogs
+    })
+
+    const file = [
+      {
+        mode: modeID,
+        path: changelogFileName,
+        content: fullLogsWithLog
+      }
+    ]
 
     if (quantityLogs >= maxLogs) {
       file[1] = {

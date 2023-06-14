@@ -78,7 +78,7 @@ function changelog({ changelogFileName, newLog, logFind, encoding, repoMain, pay
                     sort: 'updated',
                     direction: 'desc'
                 });
-                finalLog = `${newLog} - [#${response.data[0].number}](${response.data[0].html_url})`;
+                finalLog = `${newLog} > [#${response.data[0].number}](${response.data[0].html_url})`;
             }
             const oldLogs = yield (0, get_old_logs_1.default)({ changelogFileName, encoding });
             const quantityLogs = (0, quantity_logs_1.default)(oldLogs, logFind);
@@ -86,27 +86,27 @@ function changelog({ changelogFileName, newLog, logFind, encoding, repoMain, pay
             const release = (0, version_1.default)(logsSplit[0]);
             core.debug(`Current release: ${logsSplit[0]}`);
             core.debug(`Quantity logs in ${logsSplit[0]}: ${quantityLogs}`);
-            const fullLogsWithLog = (0, mount_changelog_with_new_pr_1.default)({
-                newLog: finalLog,
-                oldLogs,
-                logFind,
-                quantityLogs,
-                maxLogs
-            });
             const modeID = '100644';
-            const file = [
-                {
-                    mode: modeID,
-                    path: changelogFileName,
-                    content: fullLogsWithLog
-                }
-            ];
             // New Release
             if (quantityLogs >= maxLogs) {
+                const lastLogRelease = (0, mount_changelog_with_new_pr_1.default)({
+                    newLog: finalLog,
+                    oldLogs,
+                    logFind,
+                    quantityLogs: 0,
+                    maxLogs
+                });
+                const fileRelease = [
+                    {
+                        mode: modeID,
+                        path: changelogFileName,
+                        content: lastLogRelease
+                    }
+                ];
                 const newCommitSHARelease = yield (0, mount_sha_1.default)({
                     toolkit,
                     context: github_1.context,
-                    file,
+                    file: fileRelease,
                     repoMain
                 });
                 yield (0, create_new_release_1.default)({
@@ -117,6 +117,20 @@ function changelog({ changelogFileName, newLog, logFind, encoding, repoMain, pay
                 });
                 yield (0, slack_send_1.default)(payloadInjection, release, github_1.context.repo.repo);
             }
+            const fullLogsWithLog = (0, mount_changelog_with_new_pr_1.default)({
+                newLog: finalLog,
+                oldLogs,
+                logFind,
+                quantityLogs,
+                maxLogs
+            });
+            const file = [
+                {
+                    mode: modeID,
+                    path: changelogFileName,
+                    content: fullLogsWithLog
+                }
+            ];
             if (quantityLogs >= maxLogs) {
                 file[1] = {
                     mode: modeID,
