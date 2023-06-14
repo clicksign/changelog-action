@@ -86,15 +86,6 @@ function changelog({ changelogFileName, newLog, logFind, encoding, repoMain, pay
             const release = (0, version_1.default)(logsSplit[0]);
             core.debug(`Current release: ${logsSplit[0]}`);
             core.debug(`Quantity logs in ${logsSplit[0]}: ${quantityLogs}`);
-            // New Release
-            if (quantityLogs >= maxLogs) {
-                yield (0, create_new_release_1.default)({
-                    toolkit,
-                    context: github_1.context,
-                    logsSplit
-                });
-                yield (0, slack_send_1.default)(payloadInjection, release, github_1.context.repo.repo);
-            }
             const fullLogsWithLog = (0, mount_changelog_with_new_pr_1.default)({
                 newLog: finalLog,
                 oldLogs,
@@ -110,6 +101,22 @@ function changelog({ changelogFileName, newLog, logFind, encoding, repoMain, pay
                     content: fullLogsWithLog
                 }
             ];
+            // New Release
+            if (quantityLogs >= maxLogs) {
+                const newCommitSHARelease = yield (0, mount_sha_1.default)({
+                    toolkit,
+                    context: github_1.context,
+                    file,
+                    repoMain
+                });
+                yield (0, create_new_release_1.default)({
+                    toolkit,
+                    context: github_1.context,
+                    newCommitSHA: newCommitSHARelease,
+                    logsSplit
+                });
+                yield (0, slack_send_1.default)(payloadInjection, release, github_1.context.repo.repo);
+            }
             if (quantityLogs >= maxLogs) {
                 file[1] = {
                     mode: modeID,
@@ -421,11 +428,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-function createNewRelease({ toolkit, context, logsSplit }) {
+function createNewRelease({ toolkit, context, newCommitSHA, logsSplit }) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const ref = `refs/heads/release/v${logsSplit[0].split('v')[1]}`;
-            yield toolkit.rest.git.createRef(Object.assign({ ref, sha: context.sha }, context.repo));
+            yield toolkit.rest.git.createRef(Object.assign({ ref, sha: newCommitSHA || context.sha }, context.repo));
         }
         catch (e) {
             throw new Error(e.message);

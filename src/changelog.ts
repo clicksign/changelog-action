@@ -60,17 +60,6 @@ export default async function changelog({
     core.debug(`Current release: ${logsSplit[0]}`)
     core.debug(`Quantity logs in ${logsSplit[0]}: ${quantityLogs}`)
 
-    // New Release
-    if (quantityLogs >= maxLogs) {
-      await createNewRelease({
-        toolkit,
-        context,
-        logsSplit
-      })
-
-      await slackSend(payloadInjection, release, context.repo.repo)
-    }
-
     const fullLogsWithLog = mountChangelogWithNewPR({
       newLog: finalLog,
       oldLogs,
@@ -88,6 +77,25 @@ export default async function changelog({
         content: fullLogsWithLog
       }
     ]
+
+    // New Release
+    if (quantityLogs >= maxLogs) {
+      const newCommitSHARelease = await mountSha({
+        toolkit,
+        context,
+        file,
+        repoMain
+      })
+
+      await createNewRelease({
+        toolkit,
+        context,
+        newCommitSHA: newCommitSHARelease,
+        logsSplit
+      })
+
+      await slackSend(payloadInjection, release, context.repo.repo)
+    }
 
     if (quantityLogs >= maxLogs) {
       file[1] = {
