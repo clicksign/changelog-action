@@ -1,6 +1,7 @@
 # v1.5.0
 
 ## Alterações
+- build(deps-dev): bump @babel/traverse from 7.17.0 to 7.23.7 > [#219](https://github.com/clicksign/changelog-action/pull/219)
 - build(deps-dev): bump prettier from 2.6.1 to 2.8.4 > [#204](https://github.com/clicksign/changelog-action/pull/204)
 - build(deps-dev): bump eslint from 8.12.0 to 8.35.0 > [#208](https://github.com/clicksign/changelog-action/pull/208)
 - build(deps-dev): bump @typescript-eslint/parser from 5.16.0 to 5.54.1 > [#210](https://github.com/clicksign/changelog-action/pull/210)
