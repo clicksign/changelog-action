@@ -1,6 +1,7 @@
 # v1.6.0
 
 ## Alterações
+- build(deps): bump actions/checkout from 2 to 3.1.0 > [#163](https://github.com/clicksign/changelog-action/pull/163)
 - build(deps-dev): bump eslint-plugin-jest from 26.1.3 to 27.2.1 > [#194](https://github.com/clicksign/changelog-action/pull/194)
 ---
 
