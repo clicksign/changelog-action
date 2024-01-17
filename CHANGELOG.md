@@ -1,6 +1,7 @@
 # v1.7.0
 
 ## Alterações
+- build(deps): bump json5 from 1.0.1 to 1.0.2 > [#193](https://github.com/clicksign/changelog-action/pull/193)
 ---
 
 # v1.6.0
