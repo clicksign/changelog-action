@@ -1,7 +1,7 @@
 # v1.6.0
 
 ## Alterações
-- build(deps): bump @actions/github from 5.0.0 to 5.1.1 > [#194](https://github.com/clicksign/changelog-action/pull/194)
+- build(deps-dev): bump eslint-plugin-jest from 26.1.3 to 27.2.1 > [#194](https://github.com/clicksign/changelog-action/pull/194)
 ---
 
 # v1.5.0
