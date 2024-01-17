@@ -34,6 +34,24 @@ export default async function changelog({
 
     const toolkit = getOctokit(githubToken())
 
+    let finalLog = newLog
+
+    let brancher = context.payload.ref
+    if (brancher) {
+      brancher = brancher.split('refs/heads/')[1]
+      core.debug(`Current branch: ${brancher}`)
+      const response = await toolkit.rest.pulls.list({
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        state: 'closed',
+        base: brancher,
+        sort: 'updated',
+        direction: 'desc'
+      })
+
+      finalLog = `${newLog} > [#${response.data[0].number}](${response.data[0].html_url})`
+    }
+
     const oldLogs = await getOldlogs({changelogFileName, encoding})
     const quantityLogs = countLogsLastInRelease(oldLogs, logFind)
     const logsSplit = oldLogs.split('\n')
@@ -42,11 +60,36 @@ export default async function changelog({
     core.debug(`Current release: ${logsSplit[0]}`)
     core.debug(`Quantity logs in ${logsSplit[0]}: ${quantityLogs}`)
 
+    const modeID = '100644'
+
     // New Release
     if (quantityLogs >= maxLogs) {
+      const lastLogRelease = mountChangelogWithNewPR({
+        newLog: finalLog,
+        oldLogs,
+        logFind,
+        quantityLogs: 0,
+        maxLogs
+      })
+
+      const fileRelease = [
+        {
+          mode: modeID,
+          path: changelogFileName,
+          content: lastLogRelease
+        }
+      ]
+      const newCommitSHARelease = await mountSha({
+        toolkit,
+        context,
+        file: fileRelease,
+        repoMain
+      })
+
       await createNewRelease({
         toolkit,
         context,
+        newCommitSHA: newCommitSHARelease,
         logsSplit
       })
 
@@ -54,14 +97,12 @@ export default async function changelog({
     }
 
     const fullLogsWithLog = mountChangelogWithNewPR({
-      newLog,
+      newLog: finalLog,
       oldLogs,
       logFind,
       quantityLogs,
       maxLogs
     })
-
-    const modeID = '100644'
 
     const file = [
       {

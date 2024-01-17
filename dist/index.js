@@ -65,29 +65,65 @@ function changelog({ changelogFileName, newLog, logFind, encoding, repoMain, pay
             core.debug(`Initial log find: ${logFind}`);
             core.debug(`New log add: ${newLog}`);
             const toolkit = (0, github_1.getOctokit)(githubToken());
+            let finalLog = newLog;
+            let brancher = github_1.context.payload.ref;
+            if (brancher) {
+                brancher = brancher.split('refs/heads/')[1];
+                core.debug(`Current branch: ${brancher}`);
+                const response = yield toolkit.rest.pulls.list({
+                    owner: github_1.context.repo.owner,
+                    repo: github_1.context.repo.repo,
+                    state: 'closed',
+                    base: brancher,
+                    sort: 'updated',
+                    direction: 'desc'
+                });
+                finalLog = `${newLog} > [#${response.data[0].number}](${response.data[0].html_url})`;
+            }
             const oldLogs = yield (0, get_old_logs_1.default)({ changelogFileName, encoding });
             const quantityLogs = (0, quantity_logs_1.default)(oldLogs, logFind);
             const logsSplit = oldLogs.split('\n');
             const release = (0, version_1.default)(logsSplit[0]);
             core.debug(`Current release: ${logsSplit[0]}`);
             core.debug(`Quantity logs in ${logsSplit[0]}: ${quantityLogs}`);
+            const modeID = '100644';
             // New Release
             if (quantityLogs >= maxLogs) {
+                const lastLogRelease = (0, mount_changelog_with_new_pr_1.default)({
+                    newLog: finalLog,
+                    oldLogs,
+                    logFind,
+                    quantityLogs: 0,
+                    maxLogs
+                });
+                const fileRelease = [
+                    {
+                        mode: modeID,
+                        path: changelogFileName,
+                        content: lastLogRelease
+                    }
+                ];
+                const newCommitSHARelease = yield (0, mount_sha_1.default)({
+                    toolkit,
+                    context: github_1.context,
+                    file: fileRelease,
+                    repoMain
+                });
                 yield (0, create_new_release_1.default)({
                     toolkit,
                     context: github_1.context,
+                    newCommitSHA: newCommitSHARelease,
                     logsSplit
                 });
                 yield (0, slack_send_1.default)(payloadInjection, release, github_1.context.repo.repo);
             }
             const fullLogsWithLog = (0, mount_changelog_with_new_pr_1.default)({
-                newLog,
+                newLog: finalLog,
                 oldLogs,
                 logFind,
                 quantityLogs,
                 maxLogs
             });
-            const modeID = '100644';
             const file = [
                 {
                     mode: modeID,
@@ -406,11 +442,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-function createNewRelease({ toolkit, context, logsSplit }) {
+function createNewRelease({ toolkit, context, newCommitSHA, logsSplit }) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const ref = `refs/heads/release/v${logsSplit[0].split('v')[1]}`;
-            yield toolkit.rest.git.createRef(Object.assign({ ref, sha: context.sha }, context.repo));
+            yield toolkit.rest.git.createRef(Object.assign({ ref, sha: newCommitSHA || context.sha }, context.repo));
         }
         catch (e) {
             throw new Error(e.message);
