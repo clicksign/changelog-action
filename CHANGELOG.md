@@ -1,6 +1,7 @@
 # v1.5.0
 
 ## Alterações
+- build(deps-dev): bump @typescript-eslint/parser from 5.16.0 to 5.54.1 > [#210](https://github.com/clicksign/changelog-action/pull/210)
 ---
 
 # v1.4.0
