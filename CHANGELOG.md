@@ -1,6 +1,7 @@
 # v1.7.0
 
 ## Alterações
+- build(deps-dev): bump typescript from 4.6.3 to 4.9.5 > [#225](https://github.com/clicksign/changelog-action/pull/225)
 - build(deps): bump actions/setup-node from 3 to 4 > [#227](https://github.com/clicksign/changelog-action/pull/227)
 - build(deps): bump actions/upload-artifact from 3 to 4 > [#229](https://github.com/clicksign/changelog-action/pull/229)
 - build(deps): bump json5 from 1.0.1 to 1.0.2 > [#193](https://github.com/clicksign/changelog-action/pull/193)
