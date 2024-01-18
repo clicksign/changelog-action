@@ -1,6 +1,7 @@
 # v1.7.0
 
 ## Alterações
+- build(deps): bump github/codeql-action from 2 to 3 > [#230](https://github.com/clicksign/changelog-action/pull/230)
 - build(deps): bump json5 from 1.0.1 to 1.0.2 > [#193](https://github.com/clicksign/changelog-action/pull/193)
 ---
 
