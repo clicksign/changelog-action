@@ -1,6 +1,7 @@
 # v1.8.0
 
 ## Alterações
+- build(deps-dev): bump eslint-plugin-github from 4.3.6 to 4.10.1 > [#223](https://github.com/clicksign/changelog-action/pull/223)
 - build(deps-dev): bump @vercel/ncc from 0.33.3 to 0.38.1 > [#222](https://github.com/clicksign/changelog-action/pull/222)
 ---
 
