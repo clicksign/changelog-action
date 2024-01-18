@@ -1,6 +1,7 @@
 # v1.7.0
 
 ## Alterações
+- build(deps): bump actions/checkout from 3.1.0 to 4.1.1 > [#228](https://github.com/clicksign/changelog-action/pull/228)
 - build(deps): bump actions/upload-artifact from 3 to 4 > [#229](https://github.com/clicksign/changelog-action/pull/229)
 - build(deps): bump json5 from 1.0.1 to 1.0.2 > [#193](https://github.com/clicksign/changelog-action/pull/193)
 ---
