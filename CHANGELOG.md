@@ -1,6 +1,12 @@
+# v1.8.0
+
+## Alterações
+---
+
 # v1.7.0
 
 ## Alterações
+- build(deps-dev): bump eslint-plugin-jest from 27.2.1 to 27.6.3 > [#224](https://github.com/clicksign/changelog-action/pull/224)
 - build(deps): bump @actions/github from 5.1.1 to 6.0.0 > [#226](https://github.com/clicksign/changelog-action/pull/226)
 - build(deps-dev): bump typescript from 4.6.3 to 4.9.5 > [#225](https://github.com/clicksign/changelog-action/pull/225)
 - build(deps): bump actions/setup-node from 3 to 4 > [#227](https://github.com/clicksign/changelog-action/pull/227)
