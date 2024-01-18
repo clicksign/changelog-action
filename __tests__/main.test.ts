@@ -34,6 +34,8 @@ describe('Cangelog Action', () => {
     const logFind = 'file read test'
     const quantityLogs = countLogsLastInRelease(oldLogs, logFind)
     const maxLogs = 4
+    const createReleaseWitBracherHistory = 'false'
+    const brancherHistoryName = 'feature/test'
 
     const finalLog = mountChangelogWithNewPR({
       newLog,
@@ -59,6 +61,8 @@ describe('Cangelog Action', () => {
     const logFind = '## Alterações'
     const quantityLogs = countLogsLastInRelease(oldLogs, logFind)
     const maxLogs = 4
+    const createReleaseWitBracherHistory = 'false'
+    const brancherHistoryName = 'feature/test'
 
     const log = `# v1.0.0
 
@@ -82,6 +86,8 @@ ${logFind}\n- ${newLog}
     const logFind = '## Alterações'
     const quantityLogs = countLogsLastInRelease(oldLogs, logFind)
     const maxLogs = 4
+    const createReleaseWitBracherHistory = 'false'
+    const brancherHistoryName = 'feature/test'
 
     const log = `# v1.0.0
 
@@ -108,6 +114,8 @@ ${logFind}\n- ${newLog}
     const logFind = '## Alterações'
     const quantityLogs = countLogsLastInRelease(oldLogs, logFind)
     const maxLogs = 4
+    const createReleaseWitBracherHistory = 'false'
+    const brancherHistoryName = 'feature/test'
 
     const log = `# v1.2.0
 

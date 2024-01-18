@@ -1,6 +1,48 @@
+# v1.8.0
+
+## Alterações
+- build(deps): bump @actions/core from 1.6.0 to 1.9.1 > [#221](https://github.com/clicksign/changelog-action/pull/221)
+- build(deps-dev): bump eslint-plugin-github from 4.3.6 to 4.10.1 > [#223](https://github.com/clicksign/changelog-action/pull/223)
+- build(deps-dev): bump @vercel/ncc from 0.33.3 to 0.38.1 > [#222](https://github.com/clicksign/changelog-action/pull/222)
+---
+
+# v1.7.0
+
+## Alterações
+- build(deps-dev): bump eslint-plugin-jest from 27.2.1 to 27.6.3 > [#224](https://github.com/clicksign/changelog-action/pull/224)
+- build(deps): bump @actions/github from 5.1.1 to 6.0.0 > [#226](https://github.com/clicksign/changelog-action/pull/226)
+- build(deps-dev): bump typescript from 4.6.3 to 4.9.5 > [#225](https://github.com/clicksign/changelog-action/pull/225)
+- build(deps): bump actions/setup-node from 3 to 4 > [#227](https://github.com/clicksign/changelog-action/pull/227)
+- build(deps): bump actions/upload-artifact from 3 to 4 > [#229](https://github.com/clicksign/changelog-action/pull/229)
+- build(deps): bump json5 from 1.0.1 to 1.0.2 > [#193](https://github.com/clicksign/changelog-action/pull/193)
+---
+
+# v1.6.0
+
+## Alterações
+- build(deps): bump axios from 0.26.1 to 1.6.0 > [#214](https://github.com/clicksign/changelog-action/pull/214)
+- build(deps-dev): bump tough-cookie from 4.0.0 to 4.1.3 > [#215](https://github.com/clicksign/changelog-action/pull/215)
+- build(deps): bump follow-redirects from 1.14.9 to 1.15.5 > [#216](https://github.com/clicksign/changelog-action/pull/216)
+- build(deps-dev): bump word-wrap from 1.2.3 to 1.2.5 > [#218](https://github.com/clicksign/changelog-action/pull/218)
+- build(deps): bump actions/checkout from 2 to 3.1.0 > [#163](https://github.com/clicksign/changelog-action/pull/163)
+- build(deps-dev): bump eslint-plugin-jest from 26.1.3 to 27.2.1 > [#194](https://github.com/clicksign/changelog-action/pull/194)
+---
+
+# v1.5.0
+
+## Alterações
+- build(deps): bump actions/upload-artifact from 2 to 3 > [#97](https://github.com/clicksign/changelog-action/pull/97)
+- build(deps-dev): bump semver from 6.3.0 to 6.3.1 > [#217](https://github.com/clicksign/changelog-action/pull/217)
+- build(deps-dev): bump @babel/traverse from 7.17.0 to 7.23.7 > [#219](https://github.com/clicksign/changelog-action/pull/219)
+- build(deps-dev): bump prettier from 2.6.1 to 2.8.4 > [#204](https://github.com/clicksign/changelog-action/pull/204)
+- build(deps-dev): bump eslint from 8.12.0 to 8.35.0 > [#208](https://github.com/clicksign/changelog-action/pull/208)
+- build(deps-dev): bump @typescript-eslint/parser from 5.16.0 to 5.54.1 > [#210](https://github.com/clicksign/changelog-action/pull/210)
+---
+
 # v1.4.0
 
 ## Alterações
+- [KZ26110] add pr url in final log - [#213](https://github.com/clicksign/changelog-action/pull/213)
 - [REFACTOR] Change mount payload
 - [FEATURE] Add slack send message
 - build(deps-dev): bump ts-jest from 27.1.3 to 27.1.4
